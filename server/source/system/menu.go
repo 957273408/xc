@@ -95,6 +95,9 @@ func (i *initMenu) InitializeData(ctx context.Context) (next context.Context, er
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "upload", Name: "upload", Component: "view/example/upload/upload.vue", Sort: 5, Meta: Meta{Title: "媒体库（上传下载）", Icon: "upload"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "breakpoint", Name: "breakpoint", Component: "view/example/breakpoint/breakpoint.vue", Sort: 6, Meta: Meta{Title: "断点续传", Icon: "upload-filled"}},
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "customer", Name: "customer", Component: "view/example/customer/customer.vue", Sort: 7, Meta: Meta{Title: "客户列表（资源示例）", Icon: "avatar"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "team", Name: "team", Component: "view/example/team/team.vue", Sort: 8, Meta: Meta{Title: "战队管理", Icon: "users"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "player", Name: "player", Component: "view/example/player/player.vue", Sort: 9, Meta: Meta{Title: "选手管理", Icon: "user"}},
+		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["example"], Path: "bountyRecord", Name: "bountyRecord", Component: "view/example/bountyRecord/bountyRecord.vue", Sort: 10, Meta: Meta{Title: "赏金记录", Icon: "wallet"}},
 
 		// systemTools子菜单
 		{MenuLevel: 1, Hidden: false, ParentId: menuNameMap["systemTools"], Path: "autoPkg", Name: "autoPkg", Component: "view/systemTools/autoPkg/autoPkg.vue", Sort: 0, Meta: Meta{Title: "模板配置", Icon: "folder"}},

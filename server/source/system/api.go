@@ -260,6 +260,27 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "版本控制", Method: "POST", Path: "/sysVersion/importVersion", Description: "同步版本"},
 		{ApiGroup: "版本控制", Method: "DELETE", Path: "/sysVersion/deleteSysVersion", Description: "删除版本"},
 		{ApiGroup: "版本控制", Method: "DELETE", Path: "/sysVersion/deleteSysVersionByIds", Description: "批量删除版本"},
+
+		// 香肠API - 战队管理
+		{ApiGroup: "香肠", Method: "POST", Path: "/team/team", Description: "创建战队"},
+		{ApiGroup: "香肠", Method: "PUT", Path: "/team/team", Description: "更新战队"},
+		{ApiGroup: "香肠", Method: "DELETE", Path: "/team/team", Description: "删除战队"},
+		{ApiGroup: "香肠", Method: "GET", Path: "/team/team", Description: "获取战队"},
+		{ApiGroup: "香肠", Method: "GET", Path: "/team/teamList", Description: "获取战队列表"},
+		{ApiGroup: "香肠", Method: "POST", Path: "/team/setBounty", Description: "设置战队赏金"},
+
+		// 香肠API - 选手管理
+		{ApiGroup: "香肠", Method: "POST", Path: "/player/player", Description: "创建选手"},
+		{ApiGroup: "香肠", Method: "PUT", Path: "/player/player", Description: "更新选手"},
+		{ApiGroup: "香肠", Method: "DELETE", Path: "/player/player", Description: "删除选手"},
+		{ApiGroup: "香肠", Method: "GET", Path: "/player/player", Description: "获取选手"},
+		{ApiGroup: "香肠", Method: "GET", Path: "/player/playerList", Description: "获取选手列表"},
+		{ApiGroup: "香肠", Method: "POST", Path: "/player/allocateBounty", Description: "赏金分配"},
+		{ApiGroup: "香肠", Method: "POST", Path: "/player/kill", Description: "击杀操作"},
+		{ApiGroup: "香肠", Method: "POST", Path: "/player/revive", Description: "复活操作"},
+
+		// 香肠API - 赏金记录
+		{ApiGroup: "香肠", Method: "GET", Path: "/bountyRecord/recordList", Description: "获取赏金记录"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")
@@ -273,7 +294,7 @@ func (i *initApi) DataInserted(ctx context.Context) bool {
 	if !ok {
 		return false
 	}
-	if errors.Is(db.Where("path = ? AND method = ?", "/authorityBtn/canRemoveAuthorityBtn", "POST").
+	if errors.Is(db.Where("path = ? AND method = ?", "/bountyRecord/recordList", "GET").
 		First(&sysModel.SysApi{}).Error, gorm.ErrRecordNotFound) {
 		return false
 	}

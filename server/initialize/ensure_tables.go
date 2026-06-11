@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"context"
+
 	adapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	sysModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
@@ -65,6 +66,9 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		example.ExaFileChunk{},
 		example.ExaFileUploadAndDownload{},
 		example.ExaAttachmentCategory{},
+		example.ExaTeam{},
+		example.ExaPlayer{},
+		example.ExaBountyRecord{},
 
 		model.Info{},
 	}
@@ -107,6 +111,9 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		example.ExaFileChunk{},
 		example.ExaFileUploadAndDownload{},
 		example.ExaAttachmentCategory{},
+		example.ExaTeam{},
+		example.ExaPlayer{},
+		example.ExaBountyRecord{},
 
 		model.Info{},
 	}
