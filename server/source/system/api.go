@@ -278,9 +278,11 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "香肠", Method: "POST", Path: "/player/allocateBounty", Description: "赏金分配"},
 		{ApiGroup: "香肠", Method: "POST", Path: "/player/kill", Description: "击杀操作"},
 		{ApiGroup: "香肠", Method: "POST", Path: "/player/revive", Description: "复活操作"},
+		{ApiGroup: "香肠", Method: "POST", Path: "/player/claimFromPool", Description: "从赏金池领取"},
 
 		// 香肠API - 赏金记录
 		{ApiGroup: "香肠", Method: "GET", Path: "/bountyRecord/recordList", Description: "获取赏金记录"},
+		{ApiGroup: "香肠", Method: "GET", Path: "/bountyRecord/poolInfo", Description: "获取公共赏金池信息"},
 	}
 	if err := db.Create(&entities).Error; err != nil {
 		return ctx, errors.Wrap(err, sysModel.SysApi{}.TableName()+"表数据初始化失败!")
@@ -294,7 +296,7 @@ func (i *initApi) DataInserted(ctx context.Context) bool {
 	if !ok {
 		return false
 	}
-	if errors.Is(db.Where("path = ? AND method = ?", "/bountyRecord/recordList", "GET").
+	if errors.Is(db.Where("path = ? AND method = ?", "/bountyRecord/poolInfo", "GET").
 		First(&sysModel.SysApi{}).Error, gorm.ErrRecordNotFound) {
 		return false
 	}

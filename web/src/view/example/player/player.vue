@@ -4,6 +4,7 @@
       <div class="gva-btn-list">
         <el-button type="primary" icon="plus" @click="openDrawer">新增选手</el-button>
         <el-button type="success" icon="share" @click="openAllocateDrawer">赏金分配</el-button>
+        <el-button type="danger" icon="delete" :disabled="!selectedPlayers.length" @click="deleteSelectedPlayers">删除选中</el-button>
       </div>
       <el-form :inline="true" :model="searchForm" class="gva-search-form">
         <el-form-item label="战队筛选">
@@ -27,6 +28,7 @@
         style="width: 100%"
         tooltip-effect="dark"
         row-key="ID"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="创建时间" width="180">
@@ -52,7 +54,7 @@
           width="150"
         >
           <template #default="scope">
-            <span>{{ scope.row.Team?.teamName || '-' }}</span>
+            <span>{{ scope.row.team?.teamName || '-' }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -66,13 +68,6 @@
             <el-button
               type="primary"
               link
-              icon="edit"
-              @click="updatePlayer(scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              type="primary"
-              link
               icon="delete"
               @click="deletePlayer(scope.row)"
               >删除</el-button
@@ -82,7 +77,7 @@
               link
               icon="swords"
               @click="handleKill(scope.row)"
-              >击杀</el-button
+              >被击杀</el-button
             >
             <el-button
               type="success"
@@ -289,6 +284,7 @@ const tableData = ref([])
 const teamList = ref([])
 const allocatePlayers = ref([])
 const currentVictim = ref(null)
+const selectedPlayers = ref([])
 
 const otherPlayers = computed(() => {
   if (!currentVictim.value) return []
@@ -309,7 +305,7 @@ const getTableData = async () => {
   const table = await getPlayerList({
     page: page.value,
     pageSize: pageSize.value,
-    teamId: searchForm.value.teamId
+    id: searchForm.value.teamId
   })
   if (table.code === 0) {
     tableData.value = table.data.list
@@ -335,14 +331,14 @@ const killDrawerVisible = ref(false)
 const type = ref('')
 
 const updatePlayer = async (row) => {
-  const res = await getPlayer({ ID: row.ID })
+  const res = await getPlayer({ id: row.ID })
   type.value = 'update'
   if (res.code === 0) {
     form.value = {
       ID: res.data.ID,
       playerName: res.data.playerName,
       uid: res.data.uid,
-      teamId: res.data.TeamID,
+      teamId: res.data.teamId,
       bounty: res.data.bounty
     }
     drawerFormVisible.value = true
@@ -388,7 +384,7 @@ const deletePlayer = async (row) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-    const res = await deletePlayerApi({ ID: row.ID })
+    const res = await deletePlayerApi({ id: row.ID })
     if (res.code === 0) {
       ElMessage({
         type: 'success',
@@ -441,7 +437,7 @@ const onTeamChange = async () => {
   if (team) {
     allocateForm.value.totalBounty = team.totalBounty
   }
-  const res = await getPlayerList({ page: 1, pageSize: 100, teamId: allocateForm.value.teamId })
+  const res = await getPlayerList({ page: 1, pageSize: 100, id: allocateForm.value.teamId })
   if (res.code === 0) {
     allocatePlayers.value = res.data.list.map(p => ({
       ...p,
@@ -457,10 +453,35 @@ const calculateAllocated = () => {
 }
 
 const saveAllocate = async () => {
+  if (!allocateForm.value.teamId) {
+    ElMessage({
+      type: 'warning',
+      message: '请先选择战队'
+    })
+    return
+  }
+
   const playerBounties = allocatePlayers.value.map(p => ({
     playerId: p.ID,
     amount: p.allocateAmount || 0
   }))
+
+  const totalAllocated = playerBounties.reduce((sum, pb) => sum + pb.amount, 0)
+  const remainingAmount = allocateForm.value.totalBounty - totalAllocated
+
+  console.log(`[赏金分配] 战队ID: ${allocateForm.value.teamId}, 总赏金: ${allocateForm.value.totalBounty}, 已分配: ${totalAllocated}, 剩余: ${remainingAmount}`)
+
+  if (remainingAmount !== 0) {
+    ElMessage({
+      type: 'error',
+      message: `分配失败：剩余金额必须为0才能执行分配操作（当前剩余：${remainingAmount.toFixed(2)}）`
+    })
+    console.error(`[赏金分配失败] 剩余金额不为0: ${remainingAmount}`)
+    return
+  }
+
+  console.log('[赏金分配] 前端校验通过，开始提交请求')
+
   const res = await allocateBounty({
     teamId: allocateForm.value.teamId,
     playerBounties
@@ -472,6 +493,7 @@ const saveAllocate = async () => {
       type: 'success',
       message: '分配成功'
     })
+    console.log('[赏金分配] 分配成功')
   }
 }
 
@@ -523,6 +545,43 @@ const handleRevive = async (row) => {
         message: `复活成功，损失赏金: ${res.data.lostAmount}`
       })
     }
+  })
+}
+
+const handleSelectionChange = (rows) => {
+  selectedPlayers.value = rows
+}
+
+const deleteSelectedPlayers = async () => {
+  if (!selectedPlayers.value.length) {
+    ElMessage({
+      type: 'warning',
+      message: '请先选择要删除的选手'
+    })
+    return
+  }
+  const playerNames = selectedPlayers.value.map(p => p.playerName).join(', ')
+  ElMessageBox.confirm(`确定要删除选中的 ${selectedPlayers.value.length} 名选手吗？\n选手: ${playerNames}`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    let successCount = 0
+    let failCount = 0
+    for (const player of selectedPlayers.value) {
+      const res = await deletePlayerApi({ id: player.ID })
+      if (res.code === 0) {
+        successCount++
+      } else {
+        failCount++
+      }
+    }
+    selectedPlayers.value = []
+    getTableData()
+    ElMessage({
+      type: 'success',
+      message: `删除完成: 成功 ${successCount}, 失败 ${failCount}`
+    })
   })
 }
 </script>

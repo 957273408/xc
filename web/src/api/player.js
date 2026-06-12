@@ -63,3 +63,11 @@ export const revive = (data) => {
     data
   })
 }
+
+export const claimFromPool = (data) => {
+  return service({
+    url: '/player/claimFromPool',
+    method: 'post',
+    data
+  })
+}

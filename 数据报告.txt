@@ -1,0 +1,1402 @@
+========== 战队信息表数据分析报告 ==========
+
+表头: ["战队编号","战队缩写","战队名","UID"]
+
+========== 战队列表 (共30个) ==========
+
+战队1: 狂飙 (KB)
+  成员数量: 5
+  成员UID: ziac2, 186aq9, 182ymp, zkkia, zizma
+
+战队2: HS战队 (HS)
+  成员数量: 5
+  成员UID: zchqq, 17ucwh, zgvrm, 17wgr7, zh236
+
+战队3: ACY战队 (ACY)
+  成员数量: 5
+  成员UID: 17vxsh, zhxoy, 1834y9, 17x61f, 183hld
+
+战队4: LY战队 (LY)
+  成员数量: 5
+  成员UID: z6cia, zmuoi, 1858sx, zjiky, zkqtu
+
+战队5: ZZL (ZZL)
+  成员数量: 5
+  成员UID: 17rq37, zlg42, zn102, zddci, 184jip
+
+战队6: 人坤 (RK)
+  成员数量: 5
+  成员UID: 17xvbn, 17zsur, 184pu9, zk1jm, 17yx8z
+
+战队7: PP战队 (PP)
+  成员数量: 5
+  成员UID: 17yklv, zfavm, 17nopf, zbm4y, 183nwx
+
+战队8: T1 (T1)
+  成员数量: 5
+  成员UID: 17rdg1, 17t4nl, 17taz5, 17xccz, zimz6
+
+战队9: 中国风 (ZGF)
+  成员数量: 5
+  成员UID: 17thap, zawuq, 17zg7n, zl9si, zi40i
+
+战队10: 粉兔兔 (FTT)
+  成员数量: 5
+  成员UID: z9iaa, zkx5e, zitaq, z95n6, 1846vl
+
+战队11: ALL (ALL)
+  成员数量: 5
+  成员UID: 17wzpv, 17z9w3, zhrde, 17qo5v, znqaa
+
+战队12: 耙耳朵 (PED)
+  成员数量: 5
+  成员UID: 181k29, 181wpd, 17wteb, zheqa, 17wn2r
+
+战队13: TGH (TGH)
+  成员数量: 5
+  成员UID: 17vxsj, zm5ea, 17xioj, 17vrgz, zhl1u
+
+战队14: Galaxy Fleet (GF)
+  成员数量: 5
+  成员UID: 17r74h, 17n5qr, 17w443, 18230x, 17xp03
+
+战队15: 猛虎 (MH)
+  成员数量: 5
+  成员UID: 17yeab, 17odzn, 17xp01, 17o7o3, 17w441
+
+战队16: 花露水 (HLS)
+  成员数量: 5
+  成员UID: zc53m, z8t02, 17q577, zaqj6, 182sb5
+
+战队17: W战队 (W)
+  成员数量: 5
+  成员UID: 1829ch, zj5xu, z71si, 17wafn, 180i4z
+
+战队18: 夕阳红 (XYH)
+  成员数量: 5
+  成员UID: zignm, zgpg2, 17y1n7, 181qdt, zh8eq
+
+战队19: 新势力 (NFS)
+  成员数量: 5
+  成员UID: zn7bm, 182lzl, 183b9t, 182fo1, 17rjrl
+
+战队20: Myths (Myths)
+  成员数量: 5
+  成员UID: 17r74j, z6vgy, z7r2q, zf4k2, zd70y
+
+战队21: DFH (DFH)
+  成员数量: 5
+  成员UID: 17v8i9, 185rrl, 17xioh, 180btf, 17u6kx
+
+战队22: 彩虹岛战队 (CHD)
+  成员数量: 5
+  成员UID: zjc9e, zlsr6, 17wn2p, zjowi, z8moi
+
+战队23: 权威 (qw)
+  成员数量: 5
+  成员UID: za18y, zjv82, 17y7yr, 17owyb, 17wte9
+
+战队24: DH黑马战队 (DH)
+  成员数量: 5
+  成员UID: 17z3kj, 17uj81, 17psk3, zcudu, zco2a
+
+战队25: yy (yy)
+  成员数量: 5
+  成员UID: 17ttxt, zmbpu, 17zmj7, 1852hd, 184w5t
+
+战队26: 缔造 (Dz)
+  成员数量: 5
+  成员UID: zk7v6, zke6q, 1840k1, 183u8h, 17qo5t
+
+战队27: 极致 (ACME)
+  成员数量: 5
+  成员UID: zlmfm, zl3gy, 184d75, 180ogj, 17yqxf
+
+战队28: 哈哈 (HH)
+  成员数量: 5
+  成员UID: 17r0sz, zmi1e, 17zz6b, 17p39v, 17u09d
+
+战队29: 逆境 (NJ)
+  成员数量: 4
+  成员UID: zlz2q, 185y35, 1864ep, 17z9w1
+
+战队30: SC (SC)
+  成员数量: 5
+  成员UID: 185f4h, zmocy, 185lg1, 17slox, z9uxe
+
+
+========== 数据完整性检查 ==========
+总战队数: 30
+总选手数: 149
+警告: 战队"逆境"只有4名成员，少于预期的5名
+
+
+========== JSON数据导出 ==========
+
+--- 战队数据 ---
+[
+  {
+    "teamId": 1,
+    "teamName": "狂飙",
+    "teamAbbr": "KB",
+    "memberCount": 5
+  },
+  {
+    "teamId": 2,
+    "teamName": "HS战队",
+    "teamAbbr": "HS",
+    "memberCount": 5
+  },
+  {
+    "teamId": 3,
+    "teamName": "ACY战队",
+    "teamAbbr": "ACY",
+    "memberCount": 5
+  },
+  {
+    "teamId": 4,
+    "teamName": "LY战队",
+    "teamAbbr": "LY",
+    "memberCount": 5
+  },
+  {
+    "teamId": 5,
+    "teamName": "ZZL",
+    "teamAbbr": "ZZL",
+    "memberCount": 5
+  },
+  {
+    "teamId": 6,
+    "teamName": "人坤",
+    "teamAbbr": "RK",
+    "memberCount": 5
+  },
+  {
+    "teamId": 7,
+    "teamName": "PP战队",
+    "teamAbbr": "PP",
+    "memberCount": 5
+  },
+  {
+    "teamId": 8,
+    "teamName": "T1",
+    "teamAbbr": "T1",
+    "memberCount": 5
+  },
+  {
+    "teamId": 9,
+    "teamName": "中国风",
+    "teamAbbr": "ZGF",
+    "memberCount": 5
+  },
+  {
+    "teamId": 10,
+    "teamName": "粉兔兔",
+    "teamAbbr": "FTT",
+    "memberCount": 5
+  },
+  {
+    "teamId": 11,
+    "teamName": "ALL",
+    "teamAbbr": "ALL",
+    "memberCount": 5
+  },
+  {
+    "teamId": 12,
+    "teamName": "耙耳朵",
+    "teamAbbr": "PED",
+    "memberCount": 5
+  },
+  {
+    "teamId": 13,
+    "teamName": "TGH",
+    "teamAbbr": "TGH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 14,
+    "teamName": "Galaxy Fleet",
+    "teamAbbr": "GF",
+    "memberCount": 5
+  },
+  {
+    "teamId": 15,
+    "teamName": "猛虎",
+    "teamAbbr": "MH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 16,
+    "teamName": "花露水",
+    "teamAbbr": "HLS",
+    "memberCount": 5
+  },
+  {
+    "teamId": 17,
+    "teamName": "W战队",
+    "teamAbbr": "W",
+    "memberCount": 5
+  },
+  {
+    "teamId": 18,
+    "teamName": "夕阳红",
+    "teamAbbr": "XYH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 19,
+    "teamName": "新势力",
+    "teamAbbr": "NFS",
+    "memberCount": 5
+  },
+  {
+    "teamId": 20,
+    "teamName": "Myths",
+    "teamAbbr": "Myths",
+    "memberCount": 5
+  },
+  {
+    "teamId": 21,
+    "teamName": "DFH",
+    "teamAbbr": "DFH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 22,
+    "teamName": "彩虹岛战队",
+    "teamAbbr": "CHD",
+    "memberCount": 5
+  },
+  {
+    "teamId": 23,
+    "teamName": "权威",
+    "teamAbbr": "qw",
+    "memberCount": 5
+  },
+  {
+    "teamId": 24,
+    "teamName": "DH黑马战队",
+    "teamAbbr": "DH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 25,
+    "teamName": "yy",
+    "teamAbbr": "yy",
+    "memberCount": 5
+  },
+  {
+    "teamId": 26,
+    "teamName": "缔造",
+    "teamAbbr": "Dz",
+    "memberCount": 5
+  },
+  {
+    "teamId": 27,
+    "teamName": "极致",
+    "teamAbbr": "ACME",
+    "memberCount": 5
+  },
+  {
+    "teamId": 28,
+    "teamName": "哈哈",
+    "teamAbbr": "HH",
+    "memberCount": 5
+  },
+  {
+    "teamId": 29,
+    "teamName": "逆境",
+    "teamAbbr": "NJ",
+    "memberCount": 4
+  },
+  {
+    "teamId": 30,
+    "teamName": "SC",
+    "teamAbbr": "SC",
+    "memberCount": 5
+  }
+]
+
+--- 选手数据 ---
+[
+  {
+    "playerIndex": 1,
+    "uid": "ziac2",
+    "teamId": 1,
+    "teamName": "狂飙"
+  },
+  {
+    "playerIndex": 2,
+    "uid": "186aq9",
+    "teamId": 1,
+    "teamName": "狂飙"
+  },
+  {
+    "playerIndex": 3,
+    "uid": "182ymp",
+    "teamId": 1,
+    "teamName": "狂飙"
+  },
+  {
+    "playerIndex": 4,
+    "uid": "zkkia",
+    "teamId": 1,
+    "teamName": "狂飙"
+  },
+  {
+    "playerIndex": 5,
+    "uid": "zizma",
+    "teamId": 1,
+    "teamName": "狂飙"
+  },
+  {
+    "playerIndex": 6,
+    "uid": "zchqq",
+    "teamId": 2,
+    "teamName": "HS战队"
+  },
+  {
+    "playerIndex": 7,
+    "uid": "17ucwh",
+    "teamId": 2,
+    "teamName": "HS战队"
+  },
+  {
+    "playerIndex": 8,
+    "uid": "zgvrm",
+    "teamId": 2,
+    "teamName": "HS战队"
+  },
+  {
+    "playerIndex": 9,
+    "uid": "17wgr7",
+    "teamId": 2,
+    "teamName": "HS战队"
+  },
+  {
+    "playerIndex": 10,
+    "uid": "zh236",
+    "teamId": 2,
+    "teamName": "HS战队"
+  },
+  {
+    "playerIndex": 11,
+    "uid": "17vxsh",
+    "teamId": 3,
+    "teamName": "ACY战队"
+  },
+  {
+    "playerIndex": 12,
+    "uid": "zhxoy",
+    "teamId": 3,
+    "teamName": "ACY战队"
+  },
+  {
+    "playerIndex": 13,
+    "uid": "1834y9",
+    "teamId": 3,
+    "teamName": "ACY战队"
+  },
+  {
+    "playerIndex": 14,
+    "uid": "17x61f",
+    "teamId": 3,
+    "teamName": "ACY战队"
+  },
+  {
+    "playerIndex": 15,
+    "uid": "183hld",
+    "teamId": 3,
+    "teamName": "ACY战队"
+  },
+  {
+    "playerIndex": 16,
+    "uid": "z6cia",
+    "teamId": 4,
+    "teamName": "LY战队"
+  },
+  {
+    "playerIndex": 17,
+    "uid": "zmuoi",
+    "teamId": 4,
+    "teamName": "LY战队"
+  },
+  {
+    "playerIndex": 18,
+    "uid": "1858sx",
+    "teamId": 4,
+    "teamName": "LY战队"
+  },
+  {
+    "playerIndex": 19,
+    "uid": "zjiky",
+    "teamId": 4,
+    "teamName": "LY战队"
+  },
+  {
+    "playerIndex": 20,
+    "uid": "zkqtu",
+    "teamId": 4,
+    "teamName": "LY战队"
+  },
+  {
+    "playerIndex": 21,
+    "uid": "17rq37",
+    "teamId": 5,
+    "teamName": "ZZL"
+  },
+  {
+    "playerIndex": 22,
+    "uid": "zlg42",
+    "teamId": 5,
+    "teamName": "ZZL"
+  },
+  {
+    "playerIndex": 23,
+    "uid": "zn102",
+    "teamId": 5,
+    "teamName": "ZZL"
+  },
+  {
+    "playerIndex": 24,
+    "uid": "zddci",
+    "teamId": 5,
+    "teamName": "ZZL"
+  },
+  {
+    "playerIndex": 25,
+    "uid": "184jip",
+    "teamId": 5,
+    "teamName": "ZZL"
+  },
+  {
+    "playerIndex": 26,
+    "uid": "17xvbn",
+    "teamId": 6,
+    "teamName": "人坤"
+  },
+  {
+    "playerIndex": 27,
+    "uid": "17zsur",
+    "teamId": 6,
+    "teamName": "人坤"
+  },
+  {
+    "playerIndex": 28,
+    "uid": "184pu9",
+    "teamId": 6,
+    "teamName": "人坤"
+  },
+  {
+    "playerIndex": 29,
+    "uid": "zk1jm",
+    "teamId": 6,
+    "teamName": "人坤"
+  },
+  {
+    "playerIndex": 30,
+    "uid": "17yx8z",
+    "teamId": 6,
+    "teamName": "人坤"
+  },
+  {
+    "playerIndex": 31,
+    "uid": "17yklv",
+    "teamId": 7,
+    "teamName": "PP战队"
+  },
+  {
+    "playerIndex": 32,
+    "uid": "zfavm",
+    "teamId": 7,
+    "teamName": "PP战队"
+  },
+  {
+    "playerIndex": 33,
+    "uid": "17nopf",
+    "teamId": 7,
+    "teamName": "PP战队"
+  },
+  {
+    "playerIndex": 34,
+    "uid": "zbm4y",
+    "teamId": 7,
+    "teamName": "PP战队"
+  },
+  {
+    "playerIndex": 35,
+    "uid": "183nwx",
+    "teamId": 7,
+    "teamName": "PP战队"
+  },
+  {
+    "playerIndex": 36,
+    "uid": "17rdg1",
+    "teamId": 8,
+    "teamName": "T1"
+  },
+  {
+    "playerIndex": 37,
+    "uid": "17t4nl",
+    "teamId": 8,
+    "teamName": "T1"
+  },
+  {
+    "playerIndex": 38,
+    "uid": "17taz5",
+    "teamId": 8,
+    "teamName": "T1"
+  },
+  {
+    "playerIndex": 39,
+    "uid": "17xccz",
+    "teamId": 8,
+    "teamName": "T1"
+  },
+  {
+    "playerIndex": 40,
+    "uid": "zimz6",
+    "teamId": 8,
+    "teamName": "T1"
+  },
+  {
+    "playerIndex": 41,
+    "uid": "17thap",
+    "teamId": 9,
+    "teamName": "中国风"
+  },
+  {
+    "playerIndex": 42,
+    "uid": "zawuq",
+    "teamId": 9,
+    "teamName": "中国风"
+  },
+  {
+    "playerIndex": 43,
+    "uid": "17zg7n",
+    "teamId": 9,
+    "teamName": "中国风"
+  },
+  {
+    "playerIndex": 44,
+    "uid": "zl9si",
+    "teamId": 9,
+    "teamName": "中国风"
+  },
+  {
+    "playerIndex": 45,
+    "uid": "zi40i",
+    "teamId": 9,
+    "teamName": "中国风"
+  },
+  {
+    "playerIndex": 46,
+    "uid": "z9iaa",
+    "teamId": 10,
+    "teamName": "粉兔兔"
+  },
+  {
+    "playerIndex": 47,
+    "uid": "zkx5e",
+    "teamId": 10,
+    "teamName": "粉兔兔"
+  },
+  {
+    "playerIndex": 48,
+    "uid": "zitaq",
+    "teamId": 10,
+    "teamName": "粉兔兔"
+  },
+  {
+    "playerIndex": 49,
+    "uid": "z95n6",
+    "teamId": 10,
+    "teamName": "粉兔兔"
+  },
+  {
+    "playerIndex": 50,
+    "uid": "1846vl",
+    "teamId": 10,
+    "teamName": "粉兔兔"
+  },
+  {
+    "playerIndex": 51,
+    "uid": "17wzpv",
+    "teamId": 11,
+    "teamName": "ALL"
+  },
+  {
+    "playerIndex": 52,
+    "uid": "17z9w3",
+    "teamId": 11,
+    "teamName": "ALL"
+  },
+  {
+    "playerIndex": 53,
+    "uid": "zhrde",
+    "teamId": 11,
+    "teamName": "ALL"
+  },
+  {
+    "playerIndex": 54,
+    "uid": "17qo5v",
+    "teamId": 11,
+    "teamName": "ALL"
+  },
+  {
+    "playerIndex": 55,
+    "uid": "znqaa",
+    "teamId": 11,
+    "teamName": "ALL"
+  },
+  {
+    "playerIndex": 56,
+    "uid": "181k29",
+    "teamId": 12,
+    "teamName": "耙耳朵"
+  },
+  {
+    "playerIndex": 57,
+    "uid": "181wpd",
+    "teamId": 12,
+    "teamName": "耙耳朵"
+  },
+  {
+    "playerIndex": 58,
+    "uid": "17wteb",
+    "teamId": 12,
+    "teamName": "耙耳朵"
+  },
+  {
+    "playerIndex": 59,
+    "uid": "zheqa",
+    "teamId": 12,
+    "teamName": "耙耳朵"
+  },
+  {
+    "playerIndex": 60,
+    "uid": "17wn2r",
+    "teamId": 12,
+    "teamName": "耙耳朵"
+  },
+  {
+    "playerIndex": 61,
+    "uid": "17vxsj",
+    "teamId": 13,
+    "teamName": "TGH"
+  },
+  {
+    "playerIndex": 62,
+    "uid": "zm5ea",
+    "teamId": 13,
+    "teamName": "TGH"
+  },
+  {
+    "playerIndex": 63,
+    "uid": "17xioj",
+    "teamId": 13,
+    "teamName": "TGH"
+  },
+  {
+    "playerIndex": 64,
+    "uid": "17vrgz",
+    "teamId": 13,
+    "teamName": "TGH"
+  },
+  {
+    "playerIndex": 65,
+    "uid": "zhl1u",
+    "teamId": 13,
+    "teamName": "TGH"
+  },
+  {
+    "playerIndex": 66,
+    "uid": "17r74h",
+    "teamId": 14,
+    "teamName": "Galaxy Fleet"
+  },
+  {
+    "playerIndex": 67,
+    "uid": "17n5qr",
+    "teamId": 14,
+    "teamName": "Galaxy Fleet"
+  },
+  {
+    "playerIndex": 68,
+    "uid": "17w443",
+    "teamId": 14,
+    "teamName": "Galaxy Fleet"
+  },
+  {
+    "playerIndex": 69,
+    "uid": "18230x",
+    "teamId": 14,
+    "teamName": "Galaxy Fleet"
+  },
+  {
+    "playerIndex": 70,
+    "uid": "17xp03",
+    "teamId": 14,
+    "teamName": "Galaxy Fleet"
+  },
+  {
+    "playerIndex": 71,
+    "uid": "17yeab",
+    "teamId": 15,
+    "teamName": "猛虎"
+  },
+  {
+    "playerIndex": 72,
+    "uid": "17odzn",
+    "teamId": 15,
+    "teamName": "猛虎"
+  },
+  {
+    "playerIndex": 73,
+    "uid": "17xp01",
+    "teamId": 15,
+    "teamName": "猛虎"
+  },
+  {
+    "playerIndex": 74,
+    "uid": "17o7o3",
+    "teamId": 15,
+    "teamName": "猛虎"
+  },
+  {
+    "playerIndex": 75,
+    "uid": "17w441",
+    "teamId": 15,
+    "teamName": "猛虎"
+  },
+  {
+    "playerIndex": 76,
+    "uid": "zc53m",
+    "teamId": 16,
+    "teamName": "花露水"
+  },
+  {
+    "playerIndex": 77,
+    "uid": "z8t02",
+    "teamId": 16,
+    "teamName": "花露水"
+  },
+  {
+    "playerIndex": 78,
+    "uid": "17q577",
+    "teamId": 16,
+    "teamName": "花露水"
+  },
+  {
+    "playerIndex": 79,
+    "uid": "zaqj6",
+    "teamId": 16,
+    "teamName": "花露水"
+  },
+  {
+    "playerIndex": 80,
+    "uid": "182sb5",
+    "teamId": 16,
+    "teamName": "花露水"
+  },
+  {
+    "playerIndex": 81,
+    "uid": "1829ch",
+    "teamId": 17,
+    "teamName": "W战队"
+  },
+  {
+    "playerIndex": 82,
+    "uid": "zj5xu",
+    "teamId": 17,
+    "teamName": "W战队"
+  },
+  {
+    "playerIndex": 83,
+    "uid": "z71si",
+    "teamId": 17,
+    "teamName": "W战队"
+  },
+  {
+    "playerIndex": 84,
+    "uid": "17wafn",
+    "teamId": 17,
+    "teamName": "W战队"
+  },
+  {
+    "playerIndex": 85,
+    "uid": "180i4z",
+    "teamId": 17,
+    "teamName": "W战队"
+  },
+  {
+    "playerIndex": 86,
+    "uid": "zignm",
+    "teamId": 18,
+    "teamName": "夕阳红"
+  },
+  {
+    "playerIndex": 87,
+    "uid": "zgpg2",
+    "teamId": 18,
+    "teamName": "夕阳红"
+  },
+  {
+    "playerIndex": 88,
+    "uid": "17y1n7",
+    "teamId": 18,
+    "teamName": "夕阳红"
+  },
+  {
+    "playerIndex": 89,
+    "uid": "181qdt",
+    "teamId": 18,
+    "teamName": "夕阳红"
+  },
+  {
+    "playerIndex": 90,
+    "uid": "zh8eq",
+    "teamId": 18,
+    "teamName": "夕阳红"
+  },
+  {
+    "playerIndex": 91,
+    "uid": "zn7bm",
+    "teamId": 19,
+    "teamName": "新势力"
+  },
+  {
+    "playerIndex": 92,
+    "uid": "182lzl",
+    "teamId": 19,
+    "teamName": "新势力"
+  },
+  {
+    "playerIndex": 93,
+    "uid": "183b9t",
+    "teamId": 19,
+    "teamName": "新势力"
+  },
+  {
+    "playerIndex": 94,
+    "uid": "182fo1",
+    "teamId": 19,
+    "teamName": "新势力"
+  },
+  {
+    "playerIndex": 95,
+    "uid": "17rjrl",
+    "teamId": 19,
+    "teamName": "新势力"
+  },
+  {
+    "playerIndex": 96,
+    "uid": "17r74j",
+    "teamId": 20,
+    "teamName": "Myths"
+  },
+  {
+    "playerIndex": 97,
+    "uid": "z6vgy",
+    "teamId": 20,
+    "teamName": "Myths"
+  },
+  {
+    "playerIndex": 98,
+    "uid": "z7r2q",
+    "teamId": 20,
+    "teamName": "Myths"
+  },
+  {
+    "playerIndex": 99,
+    "uid": "zf4k2",
+    "teamId": 20,
+    "teamName": "Myths"
+  },
+  {
+    "playerIndex": 100,
+    "uid": "zd70y",
+    "teamId": 20,
+    "teamName": "Myths"
+  },
+  {
+    "playerIndex": 101,
+    "uid": "17v8i9",
+    "teamId": 21,
+    "teamName": "DFH"
+  },
+  {
+    "playerIndex": 102,
+    "uid": "185rrl",
+    "teamId": 21,
+    "teamName": "DFH"
+  },
+  {
+    "playerIndex": 103,
+    "uid": "17xioh",
+    "teamId": 21,
+    "teamName": "DFH"
+  },
+  {
+    "playerIndex": 104,
+    "uid": "180btf",
+    "teamId": 21,
+    "teamName": "DFH"
+  },
+  {
+    "playerIndex": 105,
+    "uid": "17u6kx",
+    "teamId": 21,
+    "teamName": "DFH"
+  },
+  {
+    "playerIndex": 106,
+    "uid": "zjc9e",
+    "teamId": 22,
+    "teamName": "彩虹岛战队"
+  },
+  {
+    "playerIndex": 107,
+    "uid": "zlsr6",
+    "teamId": 22,
+    "teamName": "彩虹岛战队"
+  },
+  {
+    "playerIndex": 108,
+    "uid": "17wn2p",
+    "teamId": 22,
+    "teamName": "彩虹岛战队"
+  },
+  {
+    "playerIndex": 109,
+    "uid": "zjowi",
+    "teamId": 22,
+    "teamName": "彩虹岛战队"
+  },
+  {
+    "playerIndex": 110,
+    "uid": "z8moi",
+    "teamId": 22,
+    "teamName": "彩虹岛战队"
+  },
+  {
+    "playerIndex": 111,
+    "uid": "za18y",
+    "teamId": 23,
+    "teamName": "权威"
+  },
+  {
+    "playerIndex": 112,
+    "uid": "zjv82",
+    "teamId": 23,
+    "teamName": "权威"
+  },
+  {
+    "playerIndex": 113,
+    "uid": "17y7yr",
+    "teamId": 23,
+    "teamName": "权威"
+  },
+  {
+    "playerIndex": 114,
+    "uid": "17owyb",
+    "teamId": 23,
+    "teamName": "权威"
+  },
+  {
+    "playerIndex": 115,
+    "uid": "17wte9",
+    "teamId": 23,
+    "teamName": "权威"
+  },
+  {
+    "playerIndex": 116,
+    "uid": "17z3kj",
+    "teamId": 24,
+    "teamName": "DH黑马战队"
+  },
+  {
+    "playerIndex": 117,
+    "uid": "17uj81",
+    "teamId": 24,
+    "teamName": "DH黑马战队"
+  },
+  {
+    "playerIndex": 118,
+    "uid": "17psk3",
+    "teamId": 24,
+    "teamName": "DH黑马战队"
+  },
+  {
+    "playerIndex": 119,
+    "uid": "zcudu",
+    "teamId": 24,
+    "teamName": "DH黑马战队"
+  },
+  {
+    "playerIndex": 120,
+    "uid": "zco2a",
+    "teamId": 24,
+    "teamName": "DH黑马战队"
+  },
+  {
+    "playerIndex": 121,
+    "uid": "17ttxt",
+    "teamId": 25,
+    "teamName": "yy"
+  },
+  {
+    "playerIndex": 122,
+    "uid": "zmbpu",
+    "teamId": 25,
+    "teamName": "yy"
+  },
+  {
+    "playerIndex": 123,
+    "uid": "17zmj7",
+    "teamId": 25,
+    "teamName": "yy"
+  },
+  {
+    "playerIndex": 124,
+    "uid": "1852hd",
+    "teamId": 25,
+    "teamName": "yy"
+  },
+  {
+    "playerIndex": 125,
+    "uid": "184w5t",
+    "teamId": 25,
+    "teamName": "yy"
+  },
+  {
+    "playerIndex": 126,
+    "uid": "zk7v6",
+    "teamId": 26,
+    "teamName": "缔造"
+  },
+  {
+    "playerIndex": 127,
+    "uid": "zke6q",
+    "teamId": 26,
+    "teamName": "缔造"
+  },
+  {
+    "playerIndex": 128,
+    "uid": "1840k1",
+    "teamId": 26,
+    "teamName": "缔造"
+  },
+  {
+    "playerIndex": 129,
+    "uid": "183u8h",
+    "teamId": 26,
+    "teamName": "缔造"
+  },
+  {
+    "playerIndex": 130,
+    "uid": "17qo5t",
+    "teamId": 26,
+    "teamName": "缔造"
+  },
+  {
+    "playerIndex": 131,
+    "uid": "zlmfm",
+    "teamId": 27,
+    "teamName": "极致"
+  },
+  {
+    "playerIndex": 132,
+    "uid": "zl3gy",
+    "teamId": 27,
+    "teamName": "极致"
+  },
+  {
+    "playerIndex": 133,
+    "uid": "184d75",
+    "teamId": 27,
+    "teamName": "极致"
+  },
+  {
+    "playerIndex": 134,
+    "uid": "180ogj",
+    "teamId": 27,
+    "teamName": "极致"
+  },
+  {
+    "playerIndex": 135,
+    "uid": "17yqxf",
+    "teamId": 27,
+    "teamName": "极致"
+  },
+  {
+    "playerIndex": 136,
+    "uid": "17r0sz",
+    "teamId": 28,
+    "teamName": "哈哈"
+  },
+  {
+    "playerIndex": 137,
+    "uid": "zmi1e",
+    "teamId": 28,
+    "teamName": "哈哈"
+  },
+  {
+    "playerIndex": 138,
+    "uid": "17zz6b",
+    "teamId": 28,
+    "teamName": "哈哈"
+  },
+  {
+    "playerIndex": 139,
+    "uid": "17p39v",
+    "teamId": 28,
+    "teamName": "哈哈"
+  },
+  {
+    "playerIndex": 140,
+    "uid": "17u09d",
+    "teamId": 28,
+    "teamName": "哈哈"
+  },
+  {
+    "playerIndex": 141,
+    "uid": "zlz2q",
+    "teamId": 29,
+    "teamName": "逆境"
+  },
+  {
+    "playerIndex": 142,
+    "uid": "185y35",
+    "teamId": 29,
+    "teamName": "逆境"
+  },
+  {
+    "playerIndex": 143,
+    "uid": "1864ep",
+    "teamId": 29,
+    "teamName": "逆境"
+  },
+  {
+    "playerIndex": 144,
+    "uid": "17z9w1",
+    "teamId": 29,
+    "teamName": "逆境"
+  },
+  {
+    "playerIndex": 145,
+    "uid": "185f4h",
+    "teamId": 30,
+    "teamName": "SC"
+  },
+  {
+    "playerIndex": 146,
+    "uid": "zmocy",
+    "teamId": 30,
+    "teamName": "SC"
+  },
+  {
+    "playerIndex": 147,
+    "uid": "185lg1",
+    "teamId": 30,
+    "teamName": "SC"
+  },
+  {
+    "playerIndex": 148,
+    "uid": "17slox",
+    "teamId": 30,
+    "teamName": "SC"
+  },
+  {
+    "playerIndex": 149,
+    "uid": "z9uxe",
+    "teamId": 30,
+    "teamName": "SC"
+  }
+]
+
+========== SQL INSERT语句 (供参考) ==========
+
+--- 战队表 (exa_teams) ---
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('狂飙', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('HS战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('ACY战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('LY战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('ZZL', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('人坤', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('PP战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('T1', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('中国风', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('粉兔兔', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('ALL', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('耙耳朵', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('TGH', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('Galaxy Fleet', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('猛虎', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('花露水', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('W战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('夕阳红', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('新势力', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('Myths', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('DFH', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('彩虹岛战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('权威', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('DH黑马战队', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('yy', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('缔造', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('极致', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('哈哈', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('逆境', 0);
+INSERT INTO exa_teams (team_name, total_bounty) VALUES ('SC', 0);
+
+--- 选手表 (exa_players) ---
+注意: 需要先插入战队获取ID，然后关联选手。以下为选手数据:
+选手1: UID=ziac2, 战队ID=1 (狂飙)
+选手2: UID=186aq9, 战队ID=1 (狂飙)
+选手3: UID=182ymp, 战队ID=1 (狂飙)
+选手4: UID=zkkia, 战队ID=1 (狂飙)
+选手5: UID=zizma, 战队ID=1 (狂飙)
+选手6: UID=zchqq, 战队ID=2 (HS战队)
+选手7: UID=17ucwh, 战队ID=2 (HS战队)
+选手8: UID=zgvrm, 战队ID=2 (HS战队)
+选手9: UID=17wgr7, 战队ID=2 (HS战队)
+选手10: UID=zh236, 战队ID=2 (HS战队)
+选手11: UID=17vxsh, 战队ID=3 (ACY战队)
+选手12: UID=zhxoy, 战队ID=3 (ACY战队)
+选手13: UID=1834y9, 战队ID=3 (ACY战队)
+选手14: UID=17x61f, 战队ID=3 (ACY战队)
+选手15: UID=183hld, 战队ID=3 (ACY战队)
+选手16: UID=z6cia, 战队ID=4 (LY战队)
+选手17: UID=zmuoi, 战队ID=4 (LY战队)
+选手18: UID=1858sx, 战队ID=4 (LY战队)
+选手19: UID=zjiky, 战队ID=4 (LY战队)
+选手20: UID=zkqtu, 战队ID=4 (LY战队)
+选手21: UID=17rq37, 战队ID=5 (ZZL)
+选手22: UID=zlg42, 战队ID=5 (ZZL)
+选手23: UID=zn102, 战队ID=5 (ZZL)
+选手24: UID=zddci, 战队ID=5 (ZZL)
+选手25: UID=184jip, 战队ID=5 (ZZL)
+选手26: UID=17xvbn, 战队ID=6 (人坤)
+选手27: UID=17zsur, 战队ID=6 (人坤)
+选手28: UID=184pu9, 战队ID=6 (人坤)
+选手29: UID=zk1jm, 战队ID=6 (人坤)
+选手30: UID=17yx8z, 战队ID=6 (人坤)
+选手31: UID=17yklv, 战队ID=7 (PP战队)
+选手32: UID=zfavm, 战队ID=7 (PP战队)
+选手33: UID=17nopf, 战队ID=7 (PP战队)
+选手34: UID=zbm4y, 战队ID=7 (PP战队)
+选手35: UID=183nwx, 战队ID=7 (PP战队)
+选手36: UID=17rdg1, 战队ID=8 (T1)
+选手37: UID=17t4nl, 战队ID=8 (T1)
+选手38: UID=17taz5, 战队ID=8 (T1)
+选手39: UID=17xccz, 战队ID=8 (T1)
+选手40: UID=zimz6, 战队ID=8 (T1)
+选手41: UID=17thap, 战队ID=9 (中国风)
+选手42: UID=zawuq, 战队ID=9 (中国风)
+选手43: UID=17zg7n, 战队ID=9 (中国风)
+选手44: UID=zl9si, 战队ID=9 (中国风)
+选手45: UID=zi40i, 战队ID=9 (中国风)
+选手46: UID=z9iaa, 战队ID=10 (粉兔兔)
+选手47: UID=zkx5e, 战队ID=10 (粉兔兔)
+选手48: UID=zitaq, 战队ID=10 (粉兔兔)
+选手49: UID=z95n6, 战队ID=10 (粉兔兔)
+选手50: UID=1846vl, 战队ID=10 (粉兔兔)
+选手51: UID=17wzpv, 战队ID=11 (ALL)
+选手52: UID=17z9w3, 战队ID=11 (ALL)
+选手53: UID=zhrde, 战队ID=11 (ALL)
+选手54: UID=17qo5v, 战队ID=11 (ALL)
+选手55: UID=znqaa, 战队ID=11 (ALL)
+选手56: UID=181k29, 战队ID=12 (耙耳朵)
+选手57: UID=181wpd, 战队ID=12 (耙耳朵)
+选手58: UID=17wteb, 战队ID=12 (耙耳朵)
+选手59: UID=zheqa, 战队ID=12 (耙耳朵)
+选手60: UID=17wn2r, 战队ID=12 (耙耳朵)
+选手61: UID=17vxsj, 战队ID=13 (TGH)
+选手62: UID=zm5ea, 战队ID=13 (TGH)
+选手63: UID=17xioj, 战队ID=13 (TGH)
+选手64: UID=17vrgz, 战队ID=13 (TGH)
+选手65: UID=zhl1u, 战队ID=13 (TGH)
+选手66: UID=17r74h, 战队ID=14 (Galaxy Fleet)
+选手67: UID=17n5qr, 战队ID=14 (Galaxy Fleet)
+选手68: UID=17w443, 战队ID=14 (Galaxy Fleet)
+选手69: UID=18230x, 战队ID=14 (Galaxy Fleet)
+选手70: UID=17xp03, 战队ID=14 (Galaxy Fleet)
+选手71: UID=17yeab, 战队ID=15 (猛虎)
+选手72: UID=17odzn, 战队ID=15 (猛虎)
+选手73: UID=17xp01, 战队ID=15 (猛虎)
+选手74: UID=17o7o3, 战队ID=15 (猛虎)
+选手75: UID=17w441, 战队ID=15 (猛虎)
+选手76: UID=zc53m, 战队ID=16 (花露水)
+选手77: UID=z8t02, 战队ID=16 (花露水)
+选手78: UID=17q577, 战队ID=16 (花露水)
+选手79: UID=zaqj6, 战队ID=16 (花露水)
+选手80: UID=182sb5, 战队ID=16 (花露水)
+选手81: UID=1829ch, 战队ID=17 (W战队)
+选手82: UID=zj5xu, 战队ID=17 (W战队)
+选手83: UID=z71si, 战队ID=17 (W战队)
+选手84: UID=17wafn, 战队ID=17 (W战队)
+选手85: UID=180i4z, 战队ID=17 (W战队)
+选手86: UID=zignm, 战队ID=18 (夕阳红)
+选手87: UID=zgpg2, 战队ID=18 (夕阳红)
+选手88: UID=17y1n7, 战队ID=18 (夕阳红)
+选手89: UID=181qdt, 战队ID=18 (夕阳红)
+选手90: UID=zh8eq, 战队ID=18 (夕阳红)
+选手91: UID=zn7bm, 战队ID=19 (新势力)
+选手92: UID=182lzl, 战队ID=19 (新势力)
+选手93: UID=183b9t, 战队ID=19 (新势力)
+选手94: UID=182fo1, 战队ID=19 (新势力)
+选手95: UID=17rjrl, 战队ID=19 (新势力)
+选手96: UID=17r74j, 战队ID=20 (Myths)
+选手97: UID=z6vgy, 战队ID=20 (Myths)
+选手98: UID=z7r2q, 战队ID=20 (Myths)
+选手99: UID=zf4k2, 战队ID=20 (Myths)
+选手100: UID=zd70y, 战队ID=20 (Myths)
+选手101: UID=17v8i9, 战队ID=21 (DFH)
+选手102: UID=185rrl, 战队ID=21 (DFH)
+选手103: UID=17xioh, 战队ID=21 (DFH)
+选手104: UID=180btf, 战队ID=21 (DFH)
+选手105: UID=17u6kx, 战队ID=21 (DFH)
+选手106: UID=zjc9e, 战队ID=22 (彩虹岛战队)
+选手107: UID=zlsr6, 战队ID=22 (彩虹岛战队)
+选手108: UID=17wn2p, 战队ID=22 (彩虹岛战队)
+选手109: UID=zjowi, 战队ID=22 (彩虹岛战队)
+选手110: UID=z8moi, 战队ID=22 (彩虹岛战队)
+选手111: UID=za18y, 战队ID=23 (权威)
+选手112: UID=zjv82, 战队ID=23 (权威)
+选手113: UID=17y7yr, 战队ID=23 (权威)
+选手114: UID=17owyb, 战队ID=23 (权威)
+选手115: UID=17wte9, 战队ID=23 (权威)
+选手116: UID=17z3kj, 战队ID=24 (DH黑马战队)
+选手117: UID=17uj81, 战队ID=24 (DH黑马战队)
+选手118: UID=17psk3, 战队ID=24 (DH黑马战队)
+选手119: UID=zcudu, 战队ID=24 (DH黑马战队)
+选手120: UID=zco2a, 战队ID=24 (DH黑马战队)
+选手121: UID=17ttxt, 战队ID=25 (yy)
+选手122: UID=zmbpu, 战队ID=25 (yy)
+选手123: UID=17zmj7, 战队ID=25 (yy)
+选手124: UID=1852hd, 战队ID=25 (yy)
+选手125: UID=184w5t, 战队ID=25 (yy)
+选手126: UID=zk7v6, 战队ID=26 (缔造)
+选手127: UID=zke6q, 战队ID=26 (缔造)
+选手128: UID=1840k1, 战队ID=26 (缔造)
+选手129: UID=183u8h, 战队ID=26 (缔造)
+选手130: UID=17qo5t, 战队ID=26 (缔造)
+选手131: UID=zlmfm, 战队ID=27 (极致)
+选手132: UID=zl3gy, 战队ID=27 (极致)
+选手133: UID=184d75, 战队ID=27 (极致)
+选手134: UID=180ogj, 战队ID=27 (极致)
+选手135: UID=17yqxf, 战队ID=27 (极致)
+选手136: UID=17r0sz, 战队ID=28 (哈哈)
+选手137: UID=zmi1e, 战队ID=28 (哈哈)
+选手138: UID=17zz6b, 战队ID=28 (哈哈)
+选手139: UID=17p39v, 战队ID=28 (哈哈)
+选手140: UID=17u09d, 战队ID=28 (哈哈)
+选手141: UID=zlz2q, 战队ID=29 (逆境)
+选手142: UID=185y35, 战队ID=29 (逆境)
+选手143: UID=1864ep, 战队ID=29 (逆境)
+选手144: UID=17z9w1, 战队ID=29 (逆境)
+选手145: UID=185f4h, 战队ID=30 (SC)
+选手146: UID=zmocy, 战队ID=30 (SC)
+选手147: UID=185lg1, 战队ID=30 (SC)
+选手148: UID=17slox, 战队ID=30 (SC)
+选手149: UID=z9uxe, 战队ID=30 (SC)

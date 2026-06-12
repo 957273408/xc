@@ -74,6 +74,7 @@ func RegisterTables() {
 		example.ExaTeam{},
 		example.ExaPlayer{},
 		example.ExaBountyRecord{},
+		example.ExaPublicBountyPool{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("register table failed", zap.Error(err))

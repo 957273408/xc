@@ -21,7 +21,7 @@ func (t *TeamApi) CreateTeam(c *gin.Context) {
 		return
 	}
 	team := example.ExaTeam{
-		TeamName:   req.TeamName,
+		TeamName:    req.TeamName,
 		TotalBounty: req.TotalBounty,
 	}
 	err = teamService.CreateTeam(team)
@@ -68,7 +68,7 @@ func (t *TeamApi) UpdateTeam(c *gin.Context) {
 	}
 	team := example.ExaTeam{
 		GVA_MODEL:   global.GVA_MODEL{ID: req.ID},
-		TeamName:   req.TeamName,
+		TeamName:    req.TeamName,
 		TotalBounty: req.TotalBounty,
 	}
 	err = teamService.UpdateTeam(&team)
@@ -131,12 +131,46 @@ func (t *TeamApi) SetTeamBounty(c *gin.Context) {
 	var req exaReq.SetTeamBountyRequest
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
+		global.GVA_LOG.Error("设置战队赏金请求参数解析失败", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
+	const minBounty = 0
+	const maxBounty = 99999
+
+	if req.Bounty < minBounty {
+		global.GVA_LOG.Error("设置战队赏金失败: 赏金不能为负数",
+			zap.Uint("teamID", req.TeamID),
+			zap.Float64("bounty", req.Bounty))
+		response.FailWithMessage("赏金不能为负数，最小允许值为0", c)
+		return
+	}
+
+	if req.Bounty > maxBounty {
+		global.GVA_LOG.Error("设置战队赏金失败: 赏金超过最大限制",
+			zap.Uint("teamID", req.TeamID),
+			zap.Float64("bounty", req.Bounty),
+			zap.Float64("maxBounty", maxBounty))
+		response.FailWithMessage("赏金超过最大限制，最大允许值为99999", c)
+		return
+	}
+
+	if req.Bounty != float64(int64(req.Bounty)) {
+		global.GVA_LOG.Error("设置战队赏金失败: 赏金必须为整数",
+			zap.Uint("teamID", req.TeamID),
+			zap.Float64("bounty", req.Bounty))
+		response.FailWithMessage("赏金必须为整数", c)
+		return
+	}
+
+	global.GVA_LOG.Info("设置战队赏金",
+		zap.Uint("teamID", req.TeamID),
+		zap.Float64("bounty", req.Bounty))
+
 	err = teamService.SetTeamBounty(req.TeamID, req.Bounty)
 	if err != nil {
-		global.GVA_LOG.Error("设置失败!", zap.Error(err))
+		global.GVA_LOG.Error("设置失败!", zap.Uint("teamID", req.TeamID), zap.Error(err))
 		response.FailWithMessage("设置失败", c)
 		return
 	}

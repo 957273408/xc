@@ -34,13 +34,6 @@
             <el-button
               type="primary"
               link
-              icon="edit"
-              @click="updateTeam(scope.row)"
-              >编辑</el-button
-            >
-            <el-button
-              type="primary"
-              link
               icon="delete"
               @click="deleteTeamHandler(scope.row)"
               >删除</el-button
@@ -183,7 +176,7 @@ const bountyDrawerVisible = ref(false)
 const type = ref('')
 
 const updateTeam = async (row) => {
-  const res = await getTeam({ ID: row.ID })
+  const res = await getTeam({ id: row.ID })
   type.value = 'update'
   if (res.code === 0) {
     form.value = {
@@ -219,7 +212,7 @@ const deleteTeamHandler = async (row) => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
-    const res = await deleteTeam({ ID: row.ID })
+    const res = await deleteTeam({ id: row.ID })
     if (res.code === 0) {
       ElMessage({
         type: 'success',

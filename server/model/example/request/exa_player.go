@@ -16,7 +16,7 @@ type UpdatePlayerRequest struct {
 }
 
 type AllocateBountyRequest struct {
-	TeamID       uint     `json:"teamId" form:"teamId" binding:"required"`
+	TeamID         uint           `json:"teamId" form:"teamId" binding:"required"`
 	PlayerBounties []PlayerBounty `json:"playerBounties" form:"playerBounties" binding:"required"`
 }
 
@@ -32,4 +32,9 @@ type KillRequest struct {
 
 type ReviveRequest struct {
 	PlayerID uint `json:"playerId" form:"playerId" binding:"required"`
+}
+
+type ClaimFromPoolRequest struct {
+	PlayerID uint    `json:"playerId" form:"playerId" binding:"required"`
+	Amount   float64 `json:"amount" form:"amount" binding:"required"`
 }

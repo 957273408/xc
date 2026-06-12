@@ -154,7 +154,7 @@
   const drawerFormVisible = ref(false)
   const type = ref('')
   const updateCustomer = async (row) => {
-    const res = await getExaCustomer({ ID: row.ID })
+    const res = await getExaCustomer({ id: row.ID })
     type.value = 'update'
     if (res.code === 0) {
       form.value = res.data.customer
@@ -174,7 +174,7 @@
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
-      const res = await deleteExaCustomer({ ID: row.ID })
+      const res = await deleteExaCustomer({ id: row.ID })
       if (res.code === 0) {
         ElMessage({
           type: 'success',

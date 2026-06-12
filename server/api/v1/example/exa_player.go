@@ -69,7 +69,7 @@ func (p *PlayerApi) UpdatePlayer(c *gin.Context) {
 		return
 	}
 	player := example.ExaPlayer{
-		GVA_MODEL:   global.GVA_MODEL{ID: req.ID},
+		GVA_MODEL:  global.GVA_MODEL{ID: req.ID},
 		PlayerName: req.PlayerName,
 		UID:        req.UID,
 		TeamID:     req.TeamID,
@@ -137,15 +137,23 @@ func (p *PlayerApi) AllocateBounty(c *gin.Context) {
 	var req exaReq.AllocateBountyRequest
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
+		global.GVA_LOG.Error("赏金分配请求参数解析失败", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
+	global.GVA_LOG.Info("接收到赏金分配请求",
+		zap.Uint("teamID", req.TeamID),
+		zap.Int("playerCount", len(req.PlayerBounties)))
+
 	err = playerService.AllocateBounty(req)
 	if err != nil {
-		global.GVA_LOG.Error("分配失败!", zap.Error(err))
-		response.FailWithMessage("分配失败", c)
+		global.GVA_LOG.Error("分配失败!", zap.Uint("teamID", req.TeamID), zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
+	global.GVA_LOG.Info("赏金分配成功", zap.Uint("teamID", req.TeamID))
 	response.OkWithMessage("分配成功", c)
 }
 
@@ -179,4 +187,20 @@ func (p *PlayerApi) Revive(c *gin.Context) {
 		return
 	}
 	response.OkWithDetailed(gin.H{"lostAmount": amount}, "复活成功", c)
+}
+
+func (p *PlayerApi) ClaimFromPool(c *gin.Context) {
+	var req exaReq.ClaimFromPoolRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	amount, err := playerService.ClaimFromPool(req.PlayerID, req.Amount)
+	if err != nil {
+		global.GVA_LOG.Error("领取失败!", zap.Error(err))
+		response.FailWithMessage("领取失败", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{"claimedAmount": amount}, "领取成功", c)
 }

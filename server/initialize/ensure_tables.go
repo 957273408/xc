@@ -69,6 +69,7 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		example.ExaTeam{},
 		example.ExaPlayer{},
 		example.ExaBountyRecord{},
+		example.ExaPublicBountyPool{},
 
 		model.Info{},
 	}
@@ -114,6 +115,7 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		example.ExaTeam{},
 		example.ExaPlayer{},
 		example.ExaBountyRecord{},
+		example.ExaPublicBountyPool{},
 
 		model.Info{},
 	}
