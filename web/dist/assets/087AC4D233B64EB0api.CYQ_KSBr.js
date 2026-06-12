@@ -1,0 +1,4 @@
+/*! 
+ Build based on gin-vue-admin 
+ Time : 1781233641000 */
+import{ot as e}from"./087AC4D233B64EB0index.DkBMzdit.js";var t=t=>e({url:`/api/getApiList`,method:`post`,data:t}),n=t=>e({url:`/api/createApi`,method:`post`,data:t}),r=t=>e({url:`/api/getApiById`,method:`post`,data:t}),i=t=>e({url:`/api/updateApi`,method:`post`,data:t}),a=t=>e({url:`/api/getAllApis`,method:`post`,data:t}),o=t=>e({url:`/api/deleteApi`,method:`post`,data:t}),s=t=>e({url:`/api/deleteApisByIds`,method:`delete`,data:t}),c=()=>e({url:`/api/freshCasbin`,method:`get`}),l=()=>e({url:`/api/syncApi`,method:`get`}),u=()=>e({url:`/api/getApiGroups`,method:`get`}),d=t=>e({url:`/api/ignoreApi`,method:`post`,data:t}),f=t=>e({url:`/api/enterSyncApi`,method:`post`,data:t}),p=(t,n)=>e({url:`/api/getApiRoles`,method:`get`,params:{path:t,method:n}}),m=t=>e({url:`/api/setApiRoles`,method:`post`,data:t});export{c as a,u as c,d,m as f,f as i,t as l,i as m,o as n,a as o,l as p,s as r,r as s,n as t,p as u};
