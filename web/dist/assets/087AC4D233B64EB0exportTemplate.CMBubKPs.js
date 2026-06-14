@@ -1,0 +1,4 @@
+/*! 
+ Build based on gin-vue-admin 
+ Time : 1781471599000 */
+import{ot as e}from"./087AC4D233B64EB0index.Dal6AqYO.js";var t=t=>e({url:`/sysExportTemplate/createSysExportTemplate`,method:`post`,data:t}),n=t=>e({url:`/sysExportTemplate/deleteSysExportTemplate`,method:`delete`,data:t}),r=t=>e({url:`/sysExportTemplate/deleteSysExportTemplateByIds`,method:`delete`,data:t}),i=t=>e({url:`/sysExportTemplate/updateSysExportTemplate`,method:`put`,data:t}),a=t=>e({url:`/sysExportTemplate/findSysExportTemplate`,method:`get`,params:t}),o=t=>e({url:`/sysExportTemplate/getSysExportTemplateList`,method:`get`,params:t}),s=t=>e({url:`/sysExportTemplate/exportExcel`,method:`get`,params:t}),c=t=>e({url:`/sysExportTemplate/exportTemplate`,method:`get`,params:t}),l=t=>e({url:`/sysExportTemplate/previewSQL`,method:`get`,params:t});export{c as a,l as c,s as i,i as l,n,a as o,r,o as s,t};
