@@ -158,6 +158,12 @@ mysql:
     conn-max-lifetime: 0
     singular: false
     log-zap: false
+proxy:
+    upstream-base-url: "http://match.biubiubiu.io:8099"
+    sign-key: "nCRmkbuTucUv"
+    sign-algorithm: "sha256"
+    upstream-query-mode: "json-query"
+    request-timeout: 30
 oracle:
     prefix: ""
     port: ""
