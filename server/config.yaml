@@ -105,6 +105,12 @@ mcp:
     message_path: ""
     url_prefix: ""
     separate: false
+proxy:
+    upstream-base-url: "http://match.biubiubiu.io:8099"
+    sign-key: "nCRmkbuTucUv"
+    sign-algorithm: "sha256"
+    upstream-query-mode: "json-query"
+    request-timeout: 30
 minio:
     endpoint: yourEndpoint
     access-key-id: yourAccessKeyId

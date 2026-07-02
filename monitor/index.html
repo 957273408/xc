@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>香肠派对 - 战场实时监控</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0e1a;
+  --panel: #121828;
+  --panel-2: #1a2138;
+  --border: #2a3550;
+  --text: #e0e6ed;
+  --text-dim: #7a8aa8;
+  --accent: #00d9ff;
+  --green: #2dd4a7;
+  --orange: #ff9f43;
+  --red: #ff4757;
+  --blue: #54a0ff;
+  --purple: #a55eea;
+  --gold: #ffd700;
+}
+
+body {
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ========== Header ========== */
+.header {
+  background: linear-gradient(135deg, #0d1424 0%, #1a2340 100%);
+  border-bottom: 2px solid var(--accent);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,217,255,0.1);
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.input-field {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field.w-md { width: 320px; }
+.input-field.w-sm { width: 120px; }
+
+.btn {
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #001824;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,217,255,0.3); }
+.btn:active { transform: translateY(0); }
+.btn.btn-ghost {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+.status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.status-dot.offline { background: var(--text-dim); }
+.status-dot.loading { background: var(--orange); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+
+/* ========== Layout ========== */
+.main {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 16px;
+  max-width: 2400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: visible;
+  min-width: 0;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  font-weight: 600;
+}
+.panel-header .badge {
+  background: var(--accent);
+  color: #001824;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+.panel-body { padding: 16px; min-width: 0; }
+
+/* ========== Battle Info ========== */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.info-item {
+  background: var(--panel-2);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.info-item .label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.info-item .value {
+  font-size: 16px;
+  font-weight: 600;
+}
+.info-item.full { grid-column: 1 / -1; }
+
+/* ========== Player Table ========== */
+.table-wrap {
+  overflow: auto;
+  max-height: 70vh;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  min-width: 0;
+}
+table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--panel-2);
+  padding: 9px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+thead th:hover { color: var(--accent); }
+thead th .sort-arrow { opacity: .4; font-size: 10px; }
+thead th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+
+tbody tr {
+  border-bottom: 1px solid rgba(42,53,80,0.5);
+  transition: background .15s;
+}
+tbody tr:hover { background: rgba(0,217,255,0.05); }
+tbody td {
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.rank-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+}
+.rank-1 { background: var(--gold); color: #000; }
+.rank-2 { background: #c0c0c0; color: #000; }
+.rank-3 { background: #cd7f32; color: #000; }
+.rank-other { background: var(--panel-2); color: var(--text-dim); }
+
+.player-name {
+  font-weight: 600;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player-team {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.state-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.state-alive { background: rgba(45,212,167,0.15); color: var(--green); }
+.state-down { background: rgba(255,159,67,0.15); color: var(--orange); }
+.state-dead { background: rgba(255,71,87,0.15); color: var(--red); }
+
+.health-bar {
+  display: inline-block;
+  width: 50px;
+  height: 8px;
+  background: var(--panel-2);
+  border-radius: 4px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.health-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  transition: width .3s;
+}
+
+.num-cell { font-variant-numeric: tabular-nums; }
+.num-high { color: var(--green); font-weight: 600; }
+.num-warn { color: var(--orange); }
+.num-bad { color: var(--red); }
+
+/* ========== Kill Feed ========== */
+.kill-feed {
+  max-height: 380px;
+  overflow-y: auto;
+}
+.kill-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(42,53,80,0.4);
+  font-size: 13px;
+  animation: fadeIn .3s;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; } }
+.kill-time {
+  font-size: 11px;
+  color: var(--text-dim);
+  min-width: 56px;
+}
+.kill-weapon {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--panel-2);
+  border-radius: 4px;
+  color: var(--accent);
+}
+.kill-result {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.kill-kill { background: rgba(255,71,87,0.15); color: var(--red); }
+.kill-down { background: rgba(255,159,67,0.15); color: var(--orange); }
+
+/* Poison status */
+.poison-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.poison-safe { background: rgba(45,212,167,0.12); color: var(--green); }
+.poison-solo { background: rgba(255,159,67,0.15); color: var(--orange); }
+.poison-team { background: rgba(255,71,87,0.15); color: var(--red); }
+
+/* Long range kill */
+.kill-item.long-range {
+  background: linear-gradient(90deg, rgba(255,215,0,0.08), transparent);
+  border-left: 3px solid var(--gold);
+}
+.kill-distance {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.kill-distance.far { color: var(--gold); }
+.kill-id {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: monospace;
+}
+.kill-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.kill-tab {
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--panel-2);
+  color: var(--text-dim);
+  border: 1px solid transparent;
+}
+.kill-tab.active {
+  background: var(--accent);
+  color: #001824;
+  font-weight: 600;
+}
+.kill-tab .tab-count {
+  margin-left: 4px;
+  opacity: .7;
+}
+
+/* ========== Stats summary ========== */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.stat-card {
+  flex: 1;
+  min-width: 90px;
+  background: var(--panel-2);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.stat-card .num {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.stat-card .desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* ========== Loading / Empty ========== */
+.loading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-dim);
+}
+.spinner {
+  width: 24px; height: 24px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin-right: 10px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-msg {
+  padding: 20px;
+  text-align: center;
+  color: var(--red);
+  font-size: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--panel); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">🌭 香肠派对战场监控</div>
+  <div class="header-controls">
+    <input type="text" class="input-field w-md" id="apiBase" placeholder="API基础地址" value="http://localhost:8080/api/proxy">
+    <input type="text" class="input-field w-sm" id="warIdInput" placeholder="战场ID" value="0fe848a9b617b6e3f0ccd5fe73a5594d_1">
+    <button class="btn" onclick="loadData()">查询</button>
+    <label class="toggle">
+      <input type="checkbox" id="autoRefresh"> 自动刷新
+    </label>
+    <select class="input-field w-sm" id="refreshInterval">
+      <option value="1000">1秒</option>
+      <option value="3000">3秒</option>
+      <option value="5000" selected>5秒</option>
+      <option value="10000">10秒</option>
+    </select>
+    <span><span class="status-dot offline" id="statusDot"></span><span id="statusText" style="font-size:12px;color:var(--text-dim)">未连接</span></span>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Left column -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <div class="panel">
+      <div class="panel-header">⚔️ 战场信息</div>
+      <div class="panel-body">
+        <div class="stats-row" id="statsRow">
+          <div class="stat-card"><div class="num" id="statAlive">-</div><div class="desc">存活</div></div>
+          <div class="stat-card"><div class="num" id="statDown">-</div><div class="desc">倒地</div></div>
+          <div class="stat-card"><div class="num" id="statDead">-</div><div class="desc">淘汰</div></div>
+          <div class="stat-card"><div class="num" id="statTotal">-</div><div class="desc">总人数</div></div>
+        </div>
+        <div class="info-grid" id="battleInfo">
+          <div class="info-item full"><div class="label">房间名称</div><div class="value" id="roomName">-</div></div>
+          <div class="info-item"><div class="label">毒圈等级</div><div class="value" id="circleLevel">-</div></div>
+          <div class="info-item"><div class="label">毒圈半径</div><div class="value" id="circleRadius">-</div></div>
+          <div class="info-item"><div class="label">毒圈中心 X</div><div class="value" id="circlePosX">-</div></div>
+          <div class="info-item"><div class="label">毒圈中心 Y</div><div class="value" id="circlePosY">-</div></div>
+          <div class="info-item"><div class="label">航线起点</div><div class="value" id="airlineStart">-</div></div>
+          <div class="info-item"><div class="label">航线终点</div><div class="value" id="airlineEnd">-</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <span>💀 击杀播报</span>
+        <button class="btn btn-ghost" style="padding:4px 12px;font-size:12px;" onclick="loadKillInfo()">刷新击杀信息</button>
+      </div>
+      <div class="panel-body" style="padding:12px;">
+        <div class="kill-tabs">
+          <div class="kill-tab active" id="killTabAll" onclick="setKillTab('all')">全部 <span class="tab-count" id="killCountAll">0</span></div>
+          <div class="kill-tab" id="killTabFar" onclick="setKillTab('far')">远距离淘汰 <span class="tab-count" id="killCountFar">0</span></div>
+        </div>
+        <div class="kill-feed" id="killFeed">
+          <div class="loading-wrap">暂无击杀信息，点击右上角刷新</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: Player Table (full height) -->
+  <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
+    <div class="panel">
+      <div class="panel-header">
+        <span>📊 选手数据 <span class="badge" id="playerCount">0</span></span>
+      </div>
+      <div class="panel-body" style="padding:0;">
+        <div class="table-wrap">
+          <table id="playerTable">
+            <thead>
+              <tr>
+                <th># <span class="sort-arrow"></span></th>
+                <th onclick="setSort('lostRoleRank')" class="sorted">排名 <span class="sort-arrow">▲</span></th>
+                <th onclick="setSort('nickName')">昵称 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('uID')">UID <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('teamID')">队伍 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('liveState')">存活状态 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('state')">状态 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('isFiring')">开火 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('isCoinPicked')">复活币 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('isOutCircle')">毒圈外 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('poisonStatus')">吃毒 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('health')">血量 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('curWeapon')">武器 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('totalKill')">淘汰 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('vehicleKill')">载具杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('hitWeak')">击倒 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('assists')">助攻 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('damage')">伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('inDamage')">承伤 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('heal')">治疗 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('headShot')">爆头 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('maxKillDistance')">最远击杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('maxHitDownDistance')">最远击倒 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('moveDistance')">移动 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('driveDistance')">载具 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('marchDistance')">步行 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('posX')">位置X <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('posY')">位置Y <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('posZ')">位置Z <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bulletTotalNum')">射弹 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('hitBulletNum')">命中 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('hitHeadBulletNum')">爆头命中 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('helmetLevel')">头盔 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('vestLevel')">防具 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bagLevel')">背包 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('airDrop')">空投 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('rescue')">救援 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('hook')">拉钩钩 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('big')">变大大 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('cannon')">大炮 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('wormHole')">虫洞 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('healBomb')">治疗弹 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('healBombHeal')">治疗弹量 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('shelter')">掩体 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('cloudBomb')">云雾弹 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bomb')">手雷 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('fire')">火球 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bombDamage')">手雷伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bombKill')">雷杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bombMax')">手雷MAX <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bombMaxDamage')">手雷MAX伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('bombMaxKill')">手雷MAX杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('swordKill')">圣剑杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('swordDamage')">圣剑伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('pickSwordNum')">圣剑拾取 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('mechaKill')">机甲杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('mechaDamage')">机甲伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('mechaDistance')">机甲距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('dragonKill')">呆呆龙杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('dragonDamage')">呆呆龙伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('dragonDistance')">呆呆龙距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('beUsedDragonNum')">呆呆龙登场 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('trexKingKill')">凶凶龙杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('trexKingDamage')">凶凶龙伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('trexKingDistance')">凶凶龙距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('beUsedTrexKingNum')">凶凶龙登场 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('peterosaurDistance')">飘飘龙距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('triceratopDistance')">憨憨龙距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('raptorsDistance')">奔奔龙距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('xcc')">小肠肠次数 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('xccDistance')">小肠肠距离 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('fireDamage')">火球伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('fireKill')">火球杀 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_1')">冥王卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_2')">海王卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_3')">神王卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_4')">军师卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_5')">武圣卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_6')">枭雄卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_7')">影武者卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_8')">甜心卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_9')">球球卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_10')">飞翼卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_11')">迪迦卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('skillCard_12')">泽塔卡 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('useResurrectionNum')">复活机 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('allGunDamage')">枪械伤害 <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('warId')">战场ID <span class="sort-arrow">⇅</span></th>
+                <th onclick="setSort('survive')">存活时长 <span class="sort-arrow">⇅</span></th>
+              </tr>
+            </thead>
+            <tbody id="playerTbody">
+              <tr><td colspan="89" class="loading-wrap"><div class="spinner"></div>等待数据...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentData = null;
+let currentPlayers = [];
+let killData = null;
+let sortKey = 'lostRoleRank';
+let sortDir = 1;
+let refreshTimer = null;
+let playerNameMap = {};
+let playerPosMap = {};   // uid -> {x, y, z, name}
+let killTabMode = 'all'; // 'all' or 'far'
+const FAR_KILL_DISTANCE = 100; // 远距离淘汰阈值（米）
+
+// ===== Data Loading =====
+function getApiBase() {
+  return document.getElementById('apiBase').value.replace(/\/+$/, '');
+}
+
+async function loadData() {
+  const warId = document.getElementById('warIdInput').value.trim();
+  if (!warId) { alert('请输入战场ID'); return; }
+
+  setStatus('loading', '查询中...');
+  const url = getApiBase() + '/xdc/get_info?warId=' + encodeURIComponent(warId);
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    currentData = data;
+    renderData(data);
+    setStatus('online', '已更新 ' + new Date().toLocaleTimeString());
+    loadKillInfo();
+
+    if (document.getElementById('autoRefresh').checked) {
+      ensureTimer();
+    }
+  } catch (e) {
+    setStatus('offline', '查询失败');
+    document.getElementById('playerTbody').innerHTML = '<tr><td colspan="89" class="error-msg">加载失败: ' + escapeHtml(e.message) + '<br><br>请检查API地址和战场ID是否正确</td></tr>';
+  }
+}
+
+async function loadKillInfo() {
+  const warId = document.getElementById('warIdInput').value.trim();
+  if (!warId) return;
+
+  const url = getApiBase() + '/xdc/get_kill_info?warId=' + encodeURIComponent(warId);
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    killData = data;
+    renderKillFeed(data);
+  } catch (e) {
+    document.getElementById('killFeed').innerHTML = '<div class="error-msg">击杀信息加载失败: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+// ===== Auto Refresh =====
+function ensureTimer() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  const interval = parseInt(document.getElementById('refreshInterval').value);
+  refreshTimer = setInterval(() => {
+    loadData();
+    loadKillInfo();
+  }, interval);
+}
+
+document.getElementById('autoRefresh').addEventListener('change', function() {
+  if (this.checked) {
+    ensureTimer();
+  } else {
+    if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+  }
+});
+
+document.getElementById('refreshInterval').addEventListener('change', function() {
+  if (document.getElementById('autoRefresh').checked) ensureTimer();
+});
+
+document.getElementById('warIdInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') loadData();
+});
+
+// ===== Render =====
+function renderData(data) {
+  if (!data) return;
+
+  const players = toArr(data.playerInfoList);
+  const alive = players.filter(p => p.liveState === 0 || p.state === 0).length;
+  const down = players.filter(p => p.liveState === 1).length;
+  const dead = players.filter(p => p.liveState === 2 || p.state === 2).length;
+
+  document.getElementById('statAlive').textContent = alive;
+  document.getElementById('statDown').textContent = down;
+  document.getElementById('statDead').textContent = dead;
+  document.getElementById('statTotal').textContent = players.length;
+
+  document.getElementById('roomName').textContent = data.customRoomName || '-';
+  document.getElementById('circleLevel').textContent = data.circleLevel ?? '-';
+  document.getElementById('circleRadius').textContent = fmtNum(data.circleRadius);
+  document.getElementById('circlePosX').textContent = fmtNum(data.circlePosX);
+  document.getElementById('circlePosY').textContent = fmtNum(data.circlePosY);
+  document.getElementById('airlineStart').textContent = fmtNum(data.airlineStartPosX) + ', ' + fmtNum(data.airlineStartPosY);
+  document.getElementById('airlineEnd').textContent = fmtNum(data.airlineEndPosX) + ', ' + fmtNum(data.airlineEndPosY);
+
+  // Build player name map and position map for kill feed
+  playerNameMap = {};
+  playerPosMap = {};
+  players.forEach(p => {
+    const uid = String(p.uID ?? '');
+    if (uid) {
+      playerNameMap[uid] = p.nickName || uid;
+      playerPosMap[uid] = { x: Number(p.posX) || 0, y: Number(p.posY) || 0, z: Number(p.posZ) || 0, name: p.nickName || uid };
+    }
+  });
+
+  // Calculate team poison status
+  const teamMembers = {};
+  players.forEach(p => {
+    const tid = p.teamID || getTeamFromNick(p.nickName) || '_solo';
+    if (!teamMembers[tid]) teamMembers[tid] = [];
+    teamMembers[tid].push(p);
+  });
+  players.forEach(p => {
+    const tid = p.teamID || getTeamFromNick(p.nickName) || '_solo';
+    const members = teamMembers[tid] || [p];
+    const outCount = members.filter(m => m.isOutCircle === true || m.isOutCircle === 'true').length;
+    if (p.isOutCircle === true || p.isOutCircle === 'true') {
+      p.poisonStatus = (outCount === members.length && members.length > 1) ? 'team' : 'solo';
+    } else {
+      p.poisonStatus = 'safe';
+    }
+  });
+
+  currentPlayers = players;
+  renderTable(players);
+  document.getElementById('playerCount').textContent = players.length;
+}
+
+function renderTable(players) {
+  const sorted = [...players].sort((a, b) => {
+    const va = getSortVal(a, sortKey);
+    const vb = getSortVal(b, sortKey);
+    if (typeof va === 'string') return va.localeCompare(vb) * sortDir;
+    return (va - vb) * sortDir;
+  });
+
+  const tbody = document.getElementById('playerTbody');
+  tbody.innerHTML = sorted.map((p, i) => {
+    const rank = i + 1;
+    const state = getPlayerState(p);
+    const health = p.health ?? 0;
+    const healthPct = Math.min(100, Math.max(0, health));
+    const healthColor = health > 50 ? 'var(--green)' : health > 0 ? 'var(--orange)' : 'var(--red)';
+
+    const poison = getPoisonStatus(p.poisonStatus);
+
+    return '<tr>' +
+      // ===== 基础信息 =====
+      '<td><span class="rank-cell ' + rankClass(rank) + '">' + rank + '</span></td>' +
+      '<td class="num-cell">' + fmtNum(p.lostRoleRank) + '</td>' +
+      '<td><div class="player-name">' + escapeHtml(p.nickName || String(p.uID || '?')) + '</div></td>' +
+      '<td class="num-cell" style="font-family:monospace;font-size:12px;">' + escapeHtml(p.uID || '-') + '</td>' +
+      '<td><div class="player-team">' + escapeHtml(p.teamID || getTeamFromNick(p.nickName) || '-') + '</div></td>' +
+      '<td><span class="state-badge ' + state.cls + '">' + state.text + '</span></td>' +
+      '<td class="num-cell">' + fmtState(p.state) + '</td>' +
+      '<td class="num-cell">' + (p.isFiring ? '<span style="color:var(--red)">是</span>' : '否') + '</td>' +
+      '<td class="num-cell">' + (p.isCoinPicked ? '已拾' : '未拾') + '</td>' +
+      '<td class="num-cell">' + (p.isOutCircle ? '<span style="color:var(--red)">是</span>' : '否') + '</td>' +
+      '<td><span class="poison-badge ' + poison.cls + '">' + poison.text + '</span></td>' +
+      '<td><span class="health-bar"><span class="health-fill" style="width:' + healthPct + '%;background:' + healthColor + '"></span></span>' + fmtNum(health) + '</td>' +
+      '<td>' + escapeHtml(p.curWeapon || '-') + '</td>' +
+      // ===== 战斗数据 =====
+      '<td class="num-cell ' + numClass(p.totalKill, 0) + '">' + fmtNum(p.totalKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.vehicleKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.hitWeak) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.assists) + '</td>' +
+      '<td class="num-cell ' + numClass(p.damage, 500) + '">' + fmtNum(p.damage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.inDamage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.heal) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.headShot) + '</td>' +
+      // ===== 距离数据 =====
+      '<td class="num-cell">' + fmtDist(p.maxKillDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.maxHitDownDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.moveDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.driveDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.marchDistance) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.posX) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.posY) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.posZ) + '</td>' +
+      // ===== 射击数据 =====
+      '<td class="num-cell">' + fmtNum(p.bulletTotalNum) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.hitBulletNum) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.hitHeadBulletNum) + '</td>' +
+      // ===== 装备等级 =====
+      '<td class="num-cell">' + fmtNum(p.helmetLevel) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.vestLevel) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bagLevel) + '</td>' +
+      // ===== 道具使用 =====
+      '<td class="num-cell">' + fmtNum(p.airDrop) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.rescue) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.hook) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.big) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.cannon) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.wormHole) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.healBomb) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.healBombHeal) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.shelter) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.cloudBomb) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bomb) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.fire) + '</td>' +
+      // ===== 手雷相关 =====
+      '<td class="num-cell">' + fmtNum(p.bombDamage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bombKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bombMax) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bombMaxDamage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.bombMaxKill) + '</td>' +
+      // ===== 圣剑相关 =====
+      '<td class="num-cell">' + fmtNum(p.swordKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.swordDamage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.pickSwordNum) + '</td>' +
+      // ===== 机甲相关 =====
+      '<td class="num-cell">' + fmtNum(p.mechaKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.mechaDamage) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.mechaDistance) + '</td>' +
+      // ===== 呆呆龙相关 =====
+      '<td class="num-cell">' + fmtNum(p.dragonKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.dragonDamage) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.dragonDistance) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.beUsedDragonNum) + '</td>' +
+      // ===== 凶凶龙相关 =====
+      '<td class="num-cell">' + fmtNum(p.trexKingKill) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.trexKingDamage) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.trexKingDistance) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.beUsedTrexKingNum) + '</td>' +
+      // ===== 其他龙距离 =====
+      '<td class="num-cell">' + fmtDist(p.peterosaurDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.triceratopDistance) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.raptorsDistance) + '</td>' +
+      // ===== 小肠肠 =====
+      '<td class="num-cell">' + fmtNum(p.xcc) + '</td>' +
+      '<td class="num-cell">' + fmtDist(p.xccDistance) + '</td>' +
+      // ===== 火球相关 =====
+      '<td class="num-cell">' + fmtNum(p.fireDamage) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.fireKill) + '</td>' +
+      // ===== 身份卡 1-12 =====
+      '<td class="num-cell">' + fmtNum(p.skillCard_1) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_2) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_3) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_4) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_5) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_6) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_7) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_8) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_9) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_10) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_11) + '</td>' +
+      '<td class="num-cell">' + fmtNum(p.skillCard_12) + '</td>' +
+      // ===== 其他 =====
+      '<td class="num-cell">' + fmtNum(p.useResurrectionNum) + '</td>' +
+      '<td class="num-cell" title="' + escapeHtml(p.allGunDamage || '') + '" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (p.allGunDamage ? '<span style="color:var(--accent);cursor:help;" title="' + escapeHtml(p.allGunDamage || '') + '">查看</span>' : '-') + '</td>' +
+      '<td class="num-cell" style="font-family:monospace;font-size:11px;">' + escapeHtml(p.warId || '-') + '</td>' +
+      '<td class="num-cell">' + fmtTime(p.survive) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function renderKillFeed(data) {
+  const kills = toArr(data);
+  if (!kills.length) {
+    document.getElementById('killFeed').innerHTML = '<div class="loading-wrap">暂无击杀记录</div>';
+    document.getElementById('killCountAll').textContent = '0';
+    document.getElementById('killCountFar').textContent = '0';
+    return;
+  }
+
+  // Enrich kills with distance
+  const enriched = kills.map(k => {
+    const attackerPos = playerPosMap[String(k.attackID)];
+    const victimPos = playerPosMap[String(k.beAttackID)];
+    let distance = null;
+    if (attackerPos && victimPos) {
+      const dx = attackerPos.x - victimPos.x;
+      const dy = attackerPos.y - victimPos.y;
+      const dz = (attackerPos.z || 0) - (victimPos.z || 0);
+      distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+    return { ...k, _distance: distance };
+  });
+
+  // 按 gameTime 倒序排序（最新的在最前）
+  enriched.sort((a, b) => (Number(b.gameTime) || 0) - (Number(a.gameTime) || 0));
+
+  const farKills = enriched.filter(k => k._distance !== null && k._distance >= FAR_KILL_DISTANCE);
+  document.getElementById('killCountAll').textContent = enriched.length;
+  document.getElementById('killCountFar').textContent = farKills.length;
+
+  const display = killTabMode === 'far' ? farKills : enriched;
+  if (!display.length) {
+    document.getElementById('killFeed').innerHTML = '<div class="loading-wrap">暂无' + (killTabMode === 'far' ? '远距离淘汰' : '击杀') + '记录</div>';
+    return;
+  }
+
+  document.getElementById('killFeed').innerHTML = display.map(k => {
+    const attacker = playerNameMap[String(k.attackID)] || k.attackID || '系统';
+    const victim = playerNameMap[String(k.beAttackID)] || k.beAttackID || '?';
+    const isKill = k.isRealDie;
+    const dist = k._distance;
+    const isFar = dist !== null && dist >= FAR_KILL_DISTANCE;
+    const distText = dist !== null ? Math.round(dist) + 'm' : '-';
+
+    return '<div class="kill-item' + (isFar ? ' long-range' : '') + '">' +
+      '<span class="kill-time">' + fmtTime(k.gameTime) + '</span>' +
+      '<span style="color:var(--accent);font-weight:600">' + escapeHtml(String(attacker)) + '</span>' +
+      '<span class="kill-id">[' + escapeHtml(String(k.attackID || '-')) + ']</span>' +
+      '<span class="kill-weapon">' + escapeHtml(k.weapon || '-') + '</span>' +
+      '<span style="color:var(--text-dim)">→</span>' +
+      '<span style="color:' + (isKill ? 'var(--red)' : 'var(--orange)') + ';font-weight:600">' + escapeHtml(String(victim)) + '</span>' +
+      '<span class="kill-id">[' + escapeHtml(String(k.beAttackID || '-')) + ']</span>' +
+      '<span class="kill-result ' + (isKill ? 'kill-kill' : 'kill-down') + '">' + (isKill ? '淘汰' : '击倒') + '</span>' +
+      '<span class="kill-distance' + (isFar ? ' far' : '') + '">' + (isFar ? '🎯 ' : '') + distText + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+function setKillTab(mode) {
+  killTabMode = mode;
+  document.getElementById('killTabAll').classList.toggle('active', mode === 'all');
+  document.getElementById('killTabFar').classList.toggle('active', mode === 'far');
+  if (killData) renderKillFeed(killData);
+}
+
+// ===== Helpers =====
+function toArr(v) { return Array.isArray(v) ? v : (v ? [v] : []); }
+function fmtNum(v) {
+  if (v === null || v === undefined || v === '') return '-';
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  if (Number.isInteger(n)) return n.toString();
+  return n.toFixed(1);
+}
+function fmtTime(v) {
+  if (v === null || v === undefined || v === '') return '-';
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  const m = Math.floor(n / 60);
+  const s = Math.floor(n % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+function fmtDist(v) {
+  if (v === null || v === undefined || v === '') return '-';
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'km';
+  return n + 'm';
+}
+function fmtState(v) {
+  const n = Number(v);
+  if (n === 0) return '正常';
+  if (n === 1) return '倒地';
+  if (n === 2) return '不可复活';
+  if (n === 3) return '可复活';
+  return v ?? '-';
+}
+function getTeamFromNick(nick) {
+  if (!nick) return '';
+  // 从昵称中提取队伍前缀，支持 "队伍.选手"、"队伍·选手"、"队伍_选手" 等分隔符
+  const m = String(nick).match(/^([^.\·_\-\s]+)[.\·_\-\s]/);
+  return m ? m[1] : '';
+}
+function getPlayerState(p) {
+  if (p.liveState === 2 || p.state === 2) return { cls: 'state-dead', text: '淘汰' };
+  if (p.liveState === 1 || p.state === 1) return { cls: 'state-down', text: '倒地' };
+  return { cls: 'state-alive', text: '存活' };
+}
+function getPoisonStatus(status) {
+  switch (status) {
+    case 'solo': return { cls: 'poison-solo', text: '单人吃毒' };
+    case 'team': return { cls: 'poison-team', text: '全队吃毒' };
+    default: return { cls: 'poison-safe', text: '安全' };
+  }
+}
+function rankClass(r) {
+  if (r === 1) return 'rank-1';
+  if (r === 2) return 'rank-2';
+  if (r === 3) return 'rank-3';
+  return 'rank-other';
+}
+function numClass(v, threshold) {
+  const n = Number(v) || 0;
+  if (n >= threshold * 2) return 'num-high';
+  if (n >= threshold) return 'num-warn';
+  return '';
+}
+function getSortVal(p, key) {
+  const v = p[key];
+  if (key === 'liveState') return v === 2 ? 2 : (v === 1 ? 1 : 0);
+  if (key === 'poisonStatus') {
+    if (v === 'team') return 2;
+    if (v === 'solo') return 1;
+    return 0;
+  }
+  if (typeof v === 'string') return v || '';
+  return Number(v) || 0;
+}
+function setSort(key) {
+  if (sortKey === key) {
+    sortDir = -sortDir;
+  } else {
+    sortKey = key;
+    sortDir = -1;
+  }
+  // Update header
+  const ths = document.querySelectorAll('#playerTable thead th');
+  ths.forEach(th => {
+    th.classList.remove('sorted');
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = '⇅';
+  });
+  const idx = [...ths].findIndex(th => th.getAttribute('onclick') === "setSort('" + key + "')");
+  if (idx >= 0) {
+    ths[idx].classList.add('sorted');
+    ths[idx].querySelector('.sort-arrow').textContent = sortDir === -1 ? '▼' : '▲';
+  }
+  if (currentPlayers.length) renderTable(currentPlayers);
+}
+function setStatus(cls, text) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + cls;
+  document.getElementById('statusText').textContent = text;
+}
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// Init
+loadData();
+</script>
+</body>
+</html>

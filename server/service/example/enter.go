@@ -7,4 +7,5 @@ type ServiceGroup struct {
 	TeamService
 	PlayerService
 	BountyRecordService
+	ProxyService
 }

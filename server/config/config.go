@@ -37,4 +37,7 @@ type Server struct {
 
 	// MCP配置
 	MCP MCP `mapstructure:"mcp" json:"mcp" yaml:"mcp"`
+
+	// 代理配置
+	Proxy Proxy `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
 }

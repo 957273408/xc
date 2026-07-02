@@ -11,13 +11,15 @@ type RouterGroup struct {
 	TeamRouter
 	PlayerRouter
 	BountyRecordRouter
+	ProxyRouter
 }
 
 var (
-	exaCustomerApi = api.ApiGroupApp.ExampleApiGroup.CustomerApi
-	attachmentCategoryApi = api.ApiGroupApp.ExampleApiGroup.AttachmentCategoryApi
+	exaCustomerApi              = api.ApiGroupApp.ExampleApiGroup.CustomerApi
+	attachmentCategoryApi       = api.ApiGroupApp.ExampleApiGroup.AttachmentCategoryApi
 	exaFileUploadAndDownloadApi = api.ApiGroupApp.ExampleApiGroup.FileUploadAndDownloadApi
-	exaTeamApi = api.ApiGroupApp.ExampleApiGroup.TeamApi
-	exaPlayerApi = api.ApiGroupApp.ExampleApiGroup.PlayerApi
-	exaBountyRecordApi = api.ApiGroupApp.ExampleApiGroup.BountyRecordApi
+	exaTeamApi                  = api.ApiGroupApp.ExampleApiGroup.TeamApi
+	exaPlayerApi                = api.ApiGroupApp.ExampleApiGroup.PlayerApi
+	exaBountyRecordApi          = api.ApiGroupApp.ExampleApiGroup.BountyRecordApi
+	exaProxyApi                 = api.ApiGroupApp.ExampleApiGroup.ProxyApi
 )
