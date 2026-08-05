@@ -333,7 +333,23 @@ func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp
 		teamHistoryMap[r.TeamID] = append(teamHistoryMap[r.TeamID], r.TotalScore)
 	}
 
-	// 5. 组装排名结果
+	// 5. 批量查询各战队赏金总数
+	type BountySum struct {
+		TeamID      uint  `gorm:"column:team_id"`
+		TotalBounty int64 `gorm:"column:total_bounty"`
+	}
+	var bountySums []BountySum
+	global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, SUM(bounty_coin) AS total_bounty").
+		Where("team_id IN (?)", teamIDs).
+		Group("team_id").
+		Find(&bountySums)
+	teamBountyMap := make(map[uint]int64)
+	for _, b := range bountySums {
+		teamBountyMap[b.TeamID] = b.TotalBounty
+	}
+
+	// 6. 组装排名结果
 	items := make([]exaResp.TeamRankingItem, 0, len(teams))
 	for i, t := range teams {
 		history := teamHistoryMap[t.ID]
@@ -341,13 +357,14 @@ func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp
 			history = []int{}
 		}
 		item := exaResp.TeamRankingItem{
-			Rank:       i + 1,
-			TeamID:     t.ID,
-			TeamName:   t.TeamName,
-			TeamCode:   t.TeamCode,
-			TeamLogo:   t.TeamLogo,
-			GroupName:  t.GroupName,
-			TotalScore: t.TotalScore,
+			Rank:        i + 1,
+			TeamID:      t.ID,
+			TeamName:    t.TeamCode,
+			TeamCode:    t.TeamCode,
+			TeamLogo:    t.TeamLogo,
+			GroupName:   t.GroupName,
+			TotalScore:  t.TotalScore,
+			TotalBounty: teamBountyMap[t.ID],
 		}
 		if len(history) > 0 {
 			item.ScoreHistory1 = history[0]
@@ -491,8 +508,11 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 
 	type teamInfo struct {
 		TeamName   string
+		TeamCode   string
 		TeamLogo   string
+		GroupName  string
 		TotalScore int
+		RankScore  int
 		KillCount  int
 		BountyCoin int64
 	}
@@ -504,8 +524,11 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 		}
 		all = append(all, teamInfo{
 			TeamName:   item.TeamName,
+			TeamCode:   item.TeamCode,
 			TeamLogo:   "",
+			GroupName:  "",
 			TotalScore: item.TotalScore,
+			RankScore:  item.RankScore,
 			KillCount:  item.KillCount,
 			BountyCoin: item.BountyCoin,
 		})
@@ -514,12 +537,14 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 		}
 	}
 
-	// 查询战队Logo
+	// 查询战队Logo和GroupName
 	var teams []example.CompetitionTeam
 	global.GVA_DB.Find(&teams)
 	logoMap := make(map[string]string)
+	groupNameMap := make(map[string]string)
 	for _, t := range teams {
 		logoMap[t.TeamName] = t.TeamLogo
+		groupNameMap[t.TeamName] = t.GroupName
 	}
 
 	// 按积分降序排序
@@ -528,19 +553,28 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 	})
 
 	// 构建响应
+	rankOneImg := "https://asset.fangguo.com/front-end/upload/3071503/2026-08/img/fd1627da-cb14-4d39.png"
 	resp := &exaResp.PublicWarScoreResponse{
 		WarID: warID,
 		Items: make([]exaResp.PublicWarScoreItem, 0, len(all)),
 	}
 	for i, m := range all {
+		rank := i + 1
+		rankOne := ""
+		if rank == 1 {
+			rankOne = rankOneImg
+		}
 		resp.Items = append(resp.Items, exaResp.PublicWarScoreItem{
-			Rank:        i + 1,
-			TeamName:    m.TeamName,
+			Rank:        rank,
+			TeamName:    m.TeamCode,
 			TeamLogo:    logoMap[m.TeamName],
+			GroupName:   groupNameMap[m.TeamName],
 			TotalScore:  m.TotalScore,
+			RankScore:   m.RankScore,
 			KillCount:   m.KillCount,
 			BountyCoin:  m.BountyCoin,
 			IsTopKiller: m.KillCount == maxKills && maxKills > 0,
+			RankOne:     rankOne,
 		})
 	}
 
@@ -561,16 +595,14 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 	}
 
 	teamCodes := make([]string, 0, len(teams))
-	teamNameMap := make(map[string]string)
 	teamLogoMap := make(map[string]string)
 	for _, t := range teams {
 		teamCodes = append(teamCodes, t.TeamCode)
-		teamNameMap[t.TeamCode] = t.TeamName
 		teamLogoMap[t.TeamCode] = t.TeamLogo
 	}
 
 	type teamDetail struct {
-		teamName    string
+		teamCode    string
 		teamLogo    string
 		totalBounty int64
 		players     []int64 // 按赏金降序
@@ -590,7 +622,7 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 		}
 		if _, exists := teamMap[code]; !exists {
 			teamMap[code] = &teamDetail{
-				teamName: teamNameMap[code],
+				teamCode: code,
 				teamLogo: teamLogoMap[code],
 			}
 		}
@@ -627,7 +659,7 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 			results = append(results, resultItem{
 				code: t.TeamCode,
 				teamDetail: teamDetail{
-					teamName: t.TeamName,
+					teamCode: t.TeamCode,
 					teamLogo: t.TeamLogo,
 				},
 			})
@@ -653,7 +685,7 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 	for i, r := range results {
 		item := exaResp.TeamBountyItem{
 			Rank:        i + 1,
-			TeamName:    r.teamName,
+			TeamName:    r.teamCode,
 			TeamLogo:    r.teamLogo,
 			TotalBounty: r.totalBounty,
 			IsTopBounty: r.totalBounty == maxBounty && maxBounty > 0,

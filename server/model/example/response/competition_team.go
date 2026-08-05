@@ -81,10 +81,13 @@ type PublicWarScoreItem struct {
 	Rank        int    `json:"rank"`        // 排名（按积分降序序号）
 	TeamName    string `json:"teamName"`    // 战队名称
 	TeamLogo    string `json:"teamLogo"`    // 战队logo URL
+	GroupName   string `json:"groupName"`   // 组别
 	TotalScore  int    `json:"totalScore"`  // 当场比赛积分
+	RankScore   int    `json:"rankScore"`   // 排名所获得的积分
 	KillCount   int    `json:"killCount"`   // 淘汰数
 	BountyCoin  int64  `json:"bountyCoin"`  // 赏金
 	IsTopKiller bool   `json:"isTopKiller"` // 是否淘汰数最多
+	RankOne     string `json:"rankOne"`     // 排名第一图片URL，非第一为空
 }
 
 // PublicWarScoreResponse 公开接口的WarId积分响应
@@ -133,6 +136,7 @@ type TeamRankingItem struct {
 	TeamLogo       string `json:"teamLogo"`
 	GroupName      string `json:"groupName"`
 	TotalScore     int    `json:"totalScore"`
+	TotalBounty    int64  `json:"totalBounty"` // 当前赏金总数
 	MatchCount     int    `json:"matchCount"`
 	LastRank       int    `json:"lastRank"`
 	ScoreHistory1  int    `json:"scoreHistory1"`

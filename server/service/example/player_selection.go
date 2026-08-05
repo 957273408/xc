@@ -123,7 +123,7 @@ func parsePlayerInfo(p map[string]interface{}) exaResp.PlayerInfo {
 	bulletTotal := getFloatOrFallback(p, []string{"bulletTotalNum"}, 0)
 	hitHeadBullet := getFloatOrFallback(p, []string{"hitHeadBulletNum"}, 0)
 	if bulletTotal > 0 {
-		info.HeadshotRate = roundFloat((hitHeadBullet/bulletTotal)*100, 2)
+		info.HeadshotRate = clampMax(roundFloat((hitHeadBullet/bulletTotal)*100, 2), 100)
 	} else {
 		info.HeadshotRate = 0
 	}
@@ -131,7 +131,7 @@ func parsePlayerInfo(p map[string]interface{}) exaResp.PlayerInfo {
 	// 命中率: hitBulletNum / bulletTotalNum * 100
 	hitBullet := getFloatOrFallback(p, []string{"hitBulletNum"}, 0)
 	if bulletTotal > 0 {
-		info.AccuracyRate = roundFloat((hitBullet/bulletTotal)*100, 2)
+		info.AccuracyRate = clampMax(roundFloat((hitBullet/bulletTotal)*100, 2), 100)
 	} else {
 		info.AccuracyRate = 0
 	}
@@ -213,6 +213,13 @@ func roundFloat(val float64, precision int) float64 {
 	var result float64
 	fmt.Sscanf(fmt.Sprintf(format, val), "%f", &result)
 	return result
+}
+
+func clampMax(val, max float64) float64 {
+	if val > max {
+		return max
+	}
+	return val
 }
 
 // generateSessionKey 生成随机会话标识
@@ -442,22 +449,18 @@ func (s *PlayerSelectionService) GetLatestSelection() (*exaResp.LatestSelectionR
 		})
 	}
 
-	// 查找战队信息
-	resolvedTeamName := teamName
+	// 查找战队Logo
 	teamLogo := ""
 	if teamName != "" {
 		var team example.CompetitionTeam
 		if err := global.GVA_DB.Where("team_code = ?", teamName).First(&team).Error; err == nil {
 			teamLogo = team.TeamLogo
-			if team.TeamName != "" {
-				resolvedTeamName = team.TeamName
-			}
 		}
 	}
 
-	// 回填 teamName 和 teamLogo 到每个玩家
+	// 回填 teamName（teamCode）和 teamLogo 到每个玩家
 	for i := range players {
-		players[i].TeamName = resolvedTeamName
+		players[i].TeamName = teamName
 		players[i].TeamLogo = teamLogo
 	}
 
@@ -475,7 +478,7 @@ func (s *PlayerSelectionService) GetLatestSelection() (*exaResp.LatestSelectionR
 	return &exaResp.LatestSelectionResponse{
 		WarID:             record.WarID,
 		WarIDs:            warIDs,
-		TeamName:          resolvedTeamName,
+		TeamName:          teamName,
 		TeamLogo:          teamLogo,
 		Players:           players,
 		SelectedPlayerIDs: selectedIDs,
@@ -661,8 +664,8 @@ func (s *PlayerSelectionService) GetMultiWarPlayers(warIDs []string) (*exaResp.M
 			DamageAmount: int(a.damage),
 		}
 		if a.bulletTotal > 0 {
-			info.HeadshotRate = roundFloat((a.hitHeadBullet/a.bulletTotal)*100, 2)
-			info.AccuracyRate = roundFloat((a.hitBullet/a.bulletTotal)*100, 2)
+			info.HeadshotRate = clampMax(roundFloat((a.hitHeadBullet/a.bulletTotal)*100, 2), 100)
+			info.AccuracyRate = clampMax(roundFloat((a.hitBullet/a.bulletTotal)*100, 2), 100)
 		}
 
 		healing := int(a.heal)
