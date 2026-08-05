@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 	"sync"
 	"time"
 
@@ -441,15 +442,23 @@ func (s *PlayerSelectionService) GetLatestSelection() (*exaResp.LatestSelectionR
 		})
 	}
 
+	// 查找战队信息
+	resolvedTeamName := teamName
 	teamLogo := ""
 	if teamName != "" {
 		var team example.CompetitionTeam
 		if err := global.GVA_DB.Where("team_code = ?", teamName).First(&team).Error; err == nil {
 			teamLogo = team.TeamLogo
 			if team.TeamName != "" {
-				teamName = team.TeamName
+				resolvedTeamName = team.TeamName
 			}
 		}
+	}
+
+	// 回填 teamName 和 teamLogo 到每个玩家
+	for i := range players {
+		players[i].TeamName = resolvedTeamName
+		players[i].TeamLogo = teamLogo
 	}
 
 	// 兼容返回
@@ -466,7 +475,7 @@ func (s *PlayerSelectionService) GetLatestSelection() (*exaResp.LatestSelectionR
 	return &exaResp.LatestSelectionResponse{
 		WarID:             record.WarID,
 		WarIDs:            warIDs,
-		TeamName:          teamName,
+		TeamName:          resolvedTeamName,
 		TeamLogo:          teamLogo,
 		Players:           players,
 		SelectedPlayerIDs: selectedIDs,
@@ -696,6 +705,43 @@ func strTrimSpace(s string) string {
 		s = s[:len(s)-1]
 	}
 	return s
+}
+
+// GetMultiWarTop5 多场数据Top5统计：淘汰数、爆头率、命中率、伤害量各取前5
+func (s *PlayerSelectionService) GetMultiWarTop5(warIDs []string) (*exaResp.MultiWarTop5Response, error) {
+	// 复用现有多场聚合逻辑
+	multiResp, err := s.GetMultiWarPlayers(warIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	players := multiResp.Players
+	topKills := top5(players, func(p exaResp.PlayerInfo) float64 { return float64(p.KillCount) })
+	topHeadshot := top5(players, func(p exaResp.PlayerInfo) float64 { return p.HeadshotRate })
+	topAccuracy := top5(players, func(p exaResp.PlayerInfo) float64 { return p.AccuracyRate })
+	topDamage := top5(players, func(p exaResp.PlayerInfo) float64 { return float64(p.DamageAmount) })
+
+	return &exaResp.MultiWarTop5Response{
+		WarIDs:      warIDs,
+		MatchCount:  multiResp.MatchCount,
+		TopKills:    topKills,
+		TopHeadshot: topHeadshot,
+		TopAccuracy: topAccuracy,
+		TopDamage:   topDamage,
+	}, nil
+}
+
+func top5(players []exaResp.PlayerInfo, score func(exaResp.PlayerInfo) float64) []exaResp.PlayerInfo {
+	copied := make([]exaResp.PlayerInfo, len(players))
+	copy(copied, players)
+	sort.Slice(copied, func(i, j int) bool {
+		return score(copied[i]) > score(copied[j])
+	})
+	n := 5
+	if len(copied) < n {
+		n = len(copied)
+	}
+	return copied[:n]
 }
 
 func sortPlayersByKillDesc(players []exaResp.PlayerInfo) {

@@ -48,6 +48,8 @@ type StatItem struct {
 // PlayerDetailItem 选手详情（扁平化数据项字段）
 type PlayerDetailItem struct {
 	NickName   string `json:"nickName"`
+	TeamName   string `json:"teamName"`
+	TeamLogo   string `json:"teamLogo"`
 	Data1Name  string `json:"data1name"`
 	Data1Value string `json:"data1value"`
 	Data2Name  string `json:"data2name"`
@@ -72,4 +74,14 @@ type LatestSelectionResponse struct {
 	ExtraStat2        string             `json:"extraStat2"`
 	ExtraStat         string             `json:"extraStat"`
 	CreatedAt         string             `json:"createdAt"`
+}
+
+// MultiWarTop5Response 多场Top5统计响应
+type MultiWarTop5Response struct {
+	WarIDs        []string     `json:"warIds"`
+	MatchCount    int          `json:"matchCount"`
+	TopKills      []PlayerInfo `json:"topKills"`
+	TopHeadshot   []PlayerInfo `json:"topHeadshot"`
+	TopAccuracy   []PlayerInfo `json:"topAccuracy"`
+	TopDamage     []PlayerInfo `json:"topDamage"`
 }

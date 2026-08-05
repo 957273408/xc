@@ -110,6 +110,31 @@ func (p *PlayerSelectionApi) GetMultiWarPlayers(c *gin.Context) {
 	response.OkWithDetailed(result, "获取成功", c)
 }
 
+// GetMultiWarTop5 多场Top5统计：淘汰数、爆头率、命中率、伤害量各前5
+// @Summary 多场Top5统计
+// @Tags PlayerSelection
+// @Accept json
+// @Produce json
+// @Param data body request.GetMultiWarPlayersRequest true "多场请求"
+// @Success 200 {object} response.Response{data=response.MultiWarTop5Response}
+// @Router /playerSelection/multiWarTop5 [post]
+func (p *PlayerSelectionApi) GetMultiWarTop5(c *gin.Context) {
+	var req exaReq.GetMultiWarPlayersRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	result, err := playerSelectionService.GetMultiWarTop5(req.WarIDs)
+	if err != nil {
+		global.GVA_LOG.Error("多场Top5统计失败", zap.Any("warIds", req.WarIDs), zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.OkWithDetailed(result, "获取成功", c)
+}
+
 // GetLatestSelection 公开接口：获取最新保存的选择数据（无需sessionKey）
 // @Summary 获取最新保存的玩家选择
 // @Tags PlayerSelection

@@ -13,6 +13,7 @@ func (p *PlayerSelectionRouter) InitPlayerSelectionRouter(Router, PublicRouter *
 		publicGroup.POST("save", playerSelectionApi.SavePlayerSelection)
 		publicGroup.GET("get", playerSelectionApi.GetPlayerSelection)
 		publicGroup.POST("multiWarPlayers", playerSelectionApi.GetMultiWarPlayers)
+		publicGroup.GET("multiWarTop5", playerSelectionApi.GetMultiWarTop5)
 		publicGroup.GET("latest", playerSelectionApi.GetLatestSelection)
 	}
 }
