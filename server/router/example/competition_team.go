@@ -35,5 +35,6 @@ func (c *CompetitionTeamRouter) InitCompetitionTeamRouter(Router, PublicRouter *
 		publicGroup.GET("public/warScores", competitionTeamApi.GetPublicWarScores)
 		publicGroup.GET("public/warBounty", competitionTeamApi.GetPublicWarBounty)
 		publicGroup.GET("public/teamList", competitionTeamApi.GetPublicTeamList)
+		publicGroup.GET("ranking", competitionTeamApi.GetTeamScoreRanking)
 	}
 }

@@ -1,16 +1,18 @@
 package request
 
 type CreateCompetitionTeamRequest struct {
-	TeamCode string `json:"teamCode" form:"teamCode" binding:"required" label:"战队标识"`
-	TeamName string `json:"teamName" form:"teamName" binding:"required,max=50" label:"战队名称"`
-	TeamLogo string `json:"teamLogo" form:"teamLogo" label:"战队Logo"`
+	TeamCode  string `json:"teamCode" form:"teamCode" binding:"required" label:"战队标识"`
+	TeamName  string `json:"teamName" form:"teamName" binding:"required,max=50" label:"战队名称"`
+	TeamLogo  string `json:"teamLogo" form:"teamLogo" label:"战队Logo"`
+	GroupName string `json:"groupName" form:"groupName" label:"分组信息"`
 }
 
 type UpdateCompetitionTeamRequest struct {
-	ID       uint   `json:"id" form:"id" binding:"required" label:"ID"`
-	TeamCode string `json:"teamCode" form:"teamCode" binding:"required" label:"战队标识"`
-	TeamName string `json:"teamName" form:"teamName" binding:"required,max=50" label:"战队名称"`
-	TeamLogo string `json:"teamLogo" form:"teamLogo" label:"战队Logo"`
+	ID        uint   `json:"id" form:"id" binding:"required" label:"ID"`
+	TeamCode  string `json:"teamCode" form:"teamCode" binding:"required" label:"战队标识"`
+	TeamName  string `json:"teamName" form:"teamName" binding:"required,max=50" label:"战队名称"`
+	TeamLogo  string `json:"teamLogo" form:"teamLogo" label:"战队Logo"`
+	GroupName string `json:"groupName" form:"groupName" label:"分组信息"`
 }
 
 type DeleteCompetitionTeamRequest struct {

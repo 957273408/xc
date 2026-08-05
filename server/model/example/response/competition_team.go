@@ -120,6 +120,28 @@ type TeamBountyItem struct {
 
 // PublicWarBountyResponse 公开接口的WarId赏金分配响应
 type PublicWarBountyResponse struct {
-	WarID string          `json:"warId"`
+	WarID string           `json:"warId"`
 	Items []TeamBountyItem `json:"items"`
+}
+
+// TeamRankingItem 积分排名项
+type TeamRankingItem struct {
+	Rank           int    `json:"rank"`
+	TeamID         uint   `json:"teamId"`
+	TeamName       string `json:"teamName"`
+	TeamCode       string `json:"teamCode"`
+	TeamLogo       string `json:"teamLogo"`
+	GroupName      string `json:"groupName"`
+	TotalScore     int    `json:"totalScore"`
+	MatchCount     int    `json:"matchCount"`
+	LastRank       int    `json:"lastRank"`
+	ScoreHistory1  int    `json:"scoreHistory1"`
+	ScoreHistory2  int    `json:"scoreHistory2"`
+	ScoreHistory3  int    `json:"scoreHistory3"`
+	ScoreHistory4  int    `json:"scoreHistory4"`
+}
+
+// TeamScoreRankingResponse 战队积分排名响应
+type TeamScoreRankingResponse struct {
+	Items []TeamRankingItem `json:"items"`
 }

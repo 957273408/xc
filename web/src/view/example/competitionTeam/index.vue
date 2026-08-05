@@ -147,6 +147,13 @@
             <span class="form-tip">支持JPG/PNG格式，最大2MB</span>
           </div>
         </el-form-item>
+        <el-form-item label="分组信息">
+          <el-input
+            v-model="teamForm.groupName"
+            placeholder="请输入分组信息"
+            maxlength="50"
+          />
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="createDialogVisible = false">取消</el-button>
@@ -211,7 +218,8 @@ const editingTeam = ref(null)
 const teamForm = reactive({
   teamCode: '',
   teamName: '',
-  teamLogo: ''
+  teamLogo: '',
+  groupName: ''
 })
 
 const formRef = ref(null)
@@ -319,6 +327,7 @@ const openCreateDialog = () => {
   teamForm.teamCode = ''
   teamForm.teamName = ''
   teamForm.teamLogo = ''
+  teamForm.groupName = ''
   createDialogVisible.value = true
 }
 
@@ -327,6 +336,7 @@ const openEditDialog = (team) => {
   teamForm.teamCode = team.teamCode
   teamForm.teamName = team.teamName
   teamForm.teamLogo = team.teamLogo
+  teamForm.groupName = team.groupName || ''
   createDialogVisible.value = true
 }
 
@@ -339,7 +349,8 @@ const handleSubmitTeam = async () => {
         id: editingTeam.value.ID,
         teamCode: teamForm.teamCode,
         teamName: teamForm.teamName,
-        teamLogo: teamForm.teamLogo
+        teamLogo: teamForm.teamLogo,
+        groupName: teamForm.groupName
       })
       if (res.code === 0) {
         ElMessage.success('更新成功')
@@ -352,7 +363,8 @@ const handleSubmitTeam = async () => {
       const res = await createCompetitionTeam({
         teamCode: teamForm.teamCode,
         teamName: teamForm.teamName,
-        teamLogo: teamForm.teamLogo
+        teamLogo: teamForm.teamLogo,
+        groupName: teamForm.groupName
       })
       if (res.code === 0) {
         ElMessage.success('创建成功')

@@ -1,4 +1,0 @@
-/*! 
- Build based on gin-vue-admin 
- Time : 1785920613000 */
-import{ot as e}from"./087AC4D233B64EB0index.KIRsX3I7.js";var t=t=>e({url:`/authority/getAuthorityList`,method:`post`,data:t}),n=t=>e({url:`/authority/deleteAuthority`,method:`post`,data:t}),r=t=>e({url:`/authority/createAuthority`,method:`post`,data:t}),i=t=>e({url:`/authority/copyAuthority`,method:`post`,data:t}),a=t=>e({url:`/authority/setDataAuthority`,method:`post`,data:t}),o=t=>e({url:`/authority/updateAuthority`,method:`put`,data:t}),s=t=>e({url:`/authority/getUsersByAuthority`,method:`get`,params:{authorityId:t}}),c=t=>e({url:`/authority/setRoleUsers`,method:`post`,data:t});export{s as a,o as c,t as i,r as n,a as o,n as r,c as s,i as t};

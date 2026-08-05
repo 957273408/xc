@@ -1,4 +1,4 @@
 /*! 
  Build based on gin-vue-admin 
- Time : 1785920613000 */
+ Time : 1785941130000 */
 import{Bt as e,F as t,Y as n,Z as r,cn as i,fn as a,h as o,w as s,x as c}from"./087AC4D233B64EB0vue.runtime.esm-bundler.BKnUQD2q.js";var l=a({default:()=>f});t(),e();var u={class:`grid grid-cols-2 gap-2`},d=[`href`],f={__name:`wiki`,setup(e){let t=[{title:`Vue3`,url:`https://v3.cn.vuejs.org/guide/introduction.html`},{title:`GIN 文档`,url:`https://gin-gonic.com/`},{title:`GVA 文档`,url:`https://www.gin-vue-admin.com/`},{title:`插件市场`,url:`https://plugin.gin-vue-admin.com/`},{title:`github 仓库`,url:`https://github.com/flipped-aurora/gin-vue-admin`}];return(e,a)=>(n(),s(`div`,u,[(n(),s(o,null,r(t,e=>c(`a`,{key:e.url,href:e.url,class:`text-sm text-black/70 dark:text-white/70 no-underline hover:text-[var(--el-color-primary)] dark:hover:text-white`,target:`_blank`},i(e.title),9,d)),64))]))}};export{l as n,f as t};

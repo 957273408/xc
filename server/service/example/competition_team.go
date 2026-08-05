@@ -57,9 +57,10 @@ func (s *CompetitionTeamService) UpdateCompetitionTeam(team *example.Competition
 		return errors.New("战队标识已被其他战队使用")
 	}
 	return global.GVA_DB.Model(&example.CompetitionTeam{}).Where("id = ?", team.ID).Updates(map[string]interface{}{
-		"team_code":  team.TeamCode,
-		"team_name":  team.TeamName,
-		"team_logo":  team.TeamLogo,
+		"team_code":   team.TeamCode,
+		"team_name":   team.TeamName,
+		"team_logo":   team.TeamLogo,
+		"group_name":  team.GroupName,
 		"total_score": team.TotalScore,
 	}).Error
 }
@@ -291,6 +292,81 @@ func (s *CompetitionTeamService) GetAllTeamsScoreSummary() ([]exaResp.ScoreSumma
 	return result, nil
 }
 
+// GetTeamScoreRanking 获取战队积分排名（包含最近4次积分变动记录）
+func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp.TeamScoreRankingResponse, error) {
+	// 1. 查询战队，按总积分降序
+	var teams []example.CompetitionTeam
+	query := global.GVA_DB.Order("total_score DESC")
+	if groupName != "" {
+		query = query.Where("group_name = ?", groupName)
+	}
+	if err := query.Find(&teams).Error; err != nil {
+		return nil, err
+	}
+
+	// 2. 获取所有战队 ID
+	teamIDs := make([]uint, len(teams))
+	for i, t := range teams {
+		teamIDs[i] = t.ID
+	}
+
+	// 3. 批量获取各战队最近4场积分（只需 total_score）
+	type ScoreRecord struct {
+		TeamID     uint `gorm:"column:team_id"`
+		TotalScore int  `gorm:"column:total_score"`
+	}
+	var allRecords []ScoreRecord
+	subQuery := global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, total_score, ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY settle_time DESC) AS rn").
+		Where("team_id IN (?)", teamIDs)
+	err := global.GVA_DB.Table("(?) AS ranked", subQuery).
+		Where("rn <= ?", 4).
+		Order("team_id").
+		Find(&allRecords).Error
+	if err != nil {
+		return nil, err
+	}
+
+	// 4. 按 teamID 分组，只收集 totalScore
+	teamHistoryMap := make(map[uint][]int)
+	for _, r := range allRecords {
+		teamHistoryMap[r.TeamID] = append(teamHistoryMap[r.TeamID], r.TotalScore)
+	}
+
+	// 5. 组装排名结果
+	items := make([]exaResp.TeamRankingItem, 0, len(teams))
+	for i, t := range teams {
+		history := teamHistoryMap[t.ID]
+		if history == nil {
+			history = []int{}
+		}
+		item := exaResp.TeamRankingItem{
+			Rank:       i + 1,
+			TeamID:     t.ID,
+			TeamName:   t.TeamName,
+			TeamCode:   t.TeamCode,
+			TeamLogo:   t.TeamLogo,
+			GroupName:  t.GroupName,
+			TotalScore: t.TotalScore,
+		}
+		if len(history) > 0 {
+			item.ScoreHistory1 = history[0]
+		}
+		if len(history) > 1 {
+			item.ScoreHistory2 = history[1]
+		}
+		if len(history) > 2 {
+			item.ScoreHistory3 = history[2]
+		}
+		if len(history) > 3 {
+			item.ScoreHistory4 = history[3]
+		}
+		items = append(items, item)
+	}
+
+	return &exaResp.TeamScoreRankingResponse{Items: items}, nil
+}
+
 func (s *CompetitionTeamService) DeleteTeamScore(teamID uint, warID string) error {
 	var score example.TeamScore
 	// 使用 Unscoped 查找（包括已软删除的记录）
@@ -423,6 +499,9 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 	all := make([]teamInfo, 0, len(calcResp.Items))
 	maxKills := 0
 	for _, item := range calcResp.Items {
+		if !item.Matched {
+			continue
+		}
 		all = append(all, teamInfo{
 			TeamName:   item.TeamName,
 			TeamLogo:   "",

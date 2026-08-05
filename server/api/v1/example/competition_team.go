@@ -24,9 +24,10 @@ func (a *CompetitionTeamApi) CreateCompetitionTeam(c *gin.Context) {
 	}
 
 	team := example.CompetitionTeam{
-		TeamCode: req.TeamCode,
-		TeamName: req.TeamName,
-		TeamLogo: req.TeamLogo,
+		TeamCode:  req.TeamCode,
+		TeamName:  req.TeamName,
+		TeamLogo:  req.TeamLogo,
+		GroupName: req.GroupName,
 	}
 
 	if err := competitionTeamService.CreateCompetitionTeam(team); err != nil {
@@ -50,6 +51,7 @@ func (a *CompetitionTeamApi) UpdateCompetitionTeam(c *gin.Context) {
 		TeamCode:  req.TeamCode,
 		TeamName:  req.TeamName,
 		TeamLogo:  req.TeamLogo,
+		GroupName: req.GroupName,
 	}
 
 	if err := competitionTeamService.UpdateCompetitionTeam(team); err != nil {
@@ -253,6 +255,19 @@ func (a *CompetitionTeamApi) GetAllTeamsScoreSummary(c *gin.Context) {
 	}
 
 	response.OkWithDetailed(summary, "获取成功", c)
+}
+
+// GetTeamScoreRanking 战队积分排名（包含最近4次积分变动记录）
+func (a *CompetitionTeamApi) GetTeamScoreRanking(c *gin.Context) {
+	groupName := c.Query("groupName")
+	result, err := competitionTeamService.GetTeamScoreRanking(groupName)
+	if err != nil {
+		global.GVA_LOG.Error("获取积分排名失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+
+	response.OkWithDetailed(result, "获取成功", c)
 }
 
 func (a *CompetitionTeamApi) DeleteTeamScore(c *gin.Context) {
