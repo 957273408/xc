@@ -1,4 +1,0 @@
-/*! 
- Build based on gin-vue-admin 
- Time : 1781471599000 */
-import{$ as e,At as t,F as n,O as r,S as i,Y as a,a as o,g as s,lt as c,mt as l,n as u,tt as d,w as f,x as p}from"./087AC4D233B64EB0vue.runtime.esm-bundler.BKnUQD2q.js";import{I as m}from"./087AC4D233B64EB0index.Dal6AqYO.js";l(),n(),o();var h=Object.assign({name:`RouterHolder`},{__name:`routerHolder`,setup(n){let o=m();return(n,l)=>{let m=e(`router-view`);return a(),f(`div`,null,[r(m,null,{default:c(({Component:e})=>[r(u,{mode:`out-in`,name:`el-fade-in-linear`},{default:c(()=>[(a(),i(s,{include:t(o).keepAliveRouters},[p(`div`,null,[(a(),i(d(e)))])],1032,[`include`]))]),_:2},1024)]),_:1})])}}});export{h as default};

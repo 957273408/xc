@@ -7,18 +7,14 @@ ARG NO_PROXY
 ENV HTTP_PROXY=$HTTP_PROXY
 ENV HTTPS_PROXY=$HTTPS_PROXY
 ENV NO_PROXY=$NO_PROXY
-RUN corepack enable && pnpm config set registry https://registry.npmmirror.com && pnpm config set fetch-timeout 600000
 COPY . /app
 WORKDIR /app
 
 
 FROM base AS prod-deps
-RUN pnpm install --prod
 
 
 FROM base AS build
-COPY --from=prod-deps /app/node_modules /app/node_modules
-RUN pnpm install && pnpm run build
 
 
 FROM nginx:alpine
