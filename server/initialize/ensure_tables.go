@@ -70,13 +70,14 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		example.ExaPlayer{},
 		example.ExaBountyRecord{},
 		example.ExaPublicBountyPool{},
+		example.CompetitionTeam{},
+		example.TeamScore{},
+		example.PlayerSelection{},
 
 		model.Info{},
 	}
 	for _, t := range tables {
 		_ = db.AutoMigrate(&t)
-		// 视图 authority_menu 会被当成表来创建，引发冲突错误（更新版本的gorm似乎不会）
-		// 由于 AutoMigrate() 基本无需考虑错误，因此显式忽略
 	}
 	return ctx, nil
 }
@@ -116,6 +117,9 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		example.ExaPlayer{},
 		example.ExaBountyRecord{},
 		example.ExaPublicBountyPool{},
+		example.CompetitionTeam{},
+		example.TeamScore{},
+		example.PlayerSelection{},
 
 		model.Info{},
 	}

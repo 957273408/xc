@@ -25,6 +25,32 @@ const routes = [
     component: () => import('@/view/example/upload/scanUpload.vue')
   },
   {
+    path: '/competitionTeam',
+    name: 'CompetitionTeam',
+    meta: {
+      title: '战队信息管理'
+    },
+    component: () => import('@/view/example/competitionTeam/index.vue')
+  },
+  {
+    path: '/playerSelection',
+    name: 'PlayerSelection',
+    meta: {
+      title: '选手数据选择展示',
+      client: true
+    },
+    component: () => import('@/view/example/playerSelection/index.vue')
+  },
+  {
+    path: '/multiWar',
+    name: 'MultiWar',
+    meta: {
+      title: '多场选手数据汇总',
+      client: true
+    },
+    component: () => import('@/view/example/playerSelection/multiWar.vue')
+  },
+  {
     path: '/:catchAll(.*)',
     meta: {
       closeTab: true

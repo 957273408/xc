@@ -8,4 +8,7 @@ type ServiceGroup struct {
 	PlayerService
 	BountyRecordService
 	ProxyService
+	CompetitionTeamService
+	ExcelImportService
+	PlayerSelectionService
 }

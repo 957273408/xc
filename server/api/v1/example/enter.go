@@ -10,6 +10,8 @@ type ApiGroup struct {
 	PlayerApi
 	BountyRecordApi
 	ProxyApi
+	CompetitionTeamApi
+	PlayerSelectionApi
 }
 
 var (
@@ -20,4 +22,7 @@ var (
 	playerService                = service.ServiceGroupApp.ExampleServiceGroup.PlayerService
 	bountyRecordService          = service.ServiceGroupApp.ExampleServiceGroup.BountyRecordService
 	proxyService                 = service.ServiceGroupApp.ExampleServiceGroup.ProxyService
+	competitionTeamService       = service.ServiceGroupApp.ExampleServiceGroup.CompetitionTeamService
+	excelImportService           = service.ServiceGroupApp.ExampleServiceGroup.ExcelImportService
+	playerSelectionService       = service.ServiceGroupApp.ExampleServiceGroup.PlayerSelectionService
 )

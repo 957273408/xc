@@ -103,6 +103,8 @@ func Routers() *gin.Engine {
 		exampleRouter.InitTeamRouter(PrivateGroup)                          // 战队路由
 		exampleRouter.InitPlayerRouter(PrivateGroup)                        // 选手路由
 		exampleRouter.InitBountyRecordRouter(PrivateGroup)                  // 赏金记录路由
+		exampleRouter.InitCompetitionTeamRouter(PrivateGroup, PublicGroup)              // 锦标赛战队路由
+		exampleRouter.InitPlayerSelectionRouter(PrivateGroup, PublicGroup)              // 玩家选择路由
 	}
 
 	//插件路由安装

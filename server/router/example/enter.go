@@ -12,6 +12,8 @@ type RouterGroup struct {
 	PlayerRouter
 	BountyRecordRouter
 	ProxyRouter
+	CompetitionTeamRouter
+	PlayerSelectionRouter
 }
 
 var (
@@ -22,4 +24,6 @@ var (
 	exaPlayerApi                = api.ApiGroupApp.ExampleApiGroup.PlayerApi
 	exaBountyRecordApi          = api.ApiGroupApp.ExampleApiGroup.BountyRecordApi
 	exaProxyApi                 = api.ApiGroupApp.ExampleApiGroup.ProxyApi
+	competitionTeamApi          = api.ApiGroupApp.ExampleApiGroup.CompetitionTeamApi
+	playerSelectionApi          = api.ApiGroupApp.ExampleApiGroup.PlayerSelectionApi
 )
