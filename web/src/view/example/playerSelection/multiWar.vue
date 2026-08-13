@@ -142,7 +142,7 @@
             <el-table-column prop="killCount" label="淘汰数" width="100" align="center" sortable>
               <template #default="{ row }"><span class="stat-kill">{{ row.killCount }}</span></template>
             </el-table-column>
-            <el-table-column label="爆头率" width="110" align="center" sortable :sort-method="(a,b)=>a.headshotRate-b.headshotRate">
+            <el-table-column label="暴击率" width="110" align="center" sortable :sort-method="(a,b)=>a.headshotRate-b.headshotRate">
               <template #default="{ row }"><span class="stat-rate">{{ formatPercent(row.headshotRate) }}</span></template>
             </el-table-column>
             <el-table-column label="命中率" width="110" align="center" sortable :sort-method="(a,b)=>a.accuracyRate-b.accuracyRate">
@@ -205,7 +205,7 @@
                 <span class="stat-value kill">{{ player.killCount }}</span>
               </div>
               <div class="stat-row stat-row-option-2">
-                <span class="stat-label">爆头率</span>
+                <span class="stat-label">暴击率</span>
                 <span class="stat-value rate">{{ formatPercent(player.headshotRate) }}</span>
               </div>
               <div class="stat-row stat-row-option-3">

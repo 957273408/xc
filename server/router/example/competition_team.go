@@ -28,6 +28,7 @@ func (c *CompetitionTeamRouter) InitCompetitionTeamRouter(Router, PublicRouter *
 		routerWithoutRecord.GET("recentScores", competitionTeamApi.GetTeamRecentScores)
 		routerWithoutRecord.GET("detail", competitionTeamApi.GetTeamDetail)
 		routerWithoutRecord.GET("allScores", competitionTeamApi.GetAllTeamsScoreSummary)
+		routerWithoutRecord.GET("warTable", competitionTeamApi.GetWarTableDownload)
 	}
 	// 公开路由（无鉴权）
 	publicGroup := PublicRouter.Group("competitionTeam")
@@ -35,6 +36,8 @@ func (c *CompetitionTeamRouter) InitCompetitionTeamRouter(Router, PublicRouter *
 		publicGroup.GET("public/warScores", competitionTeamApi.GetPublicWarScores)
 		publicGroup.GET("public/warBounty", competitionTeamApi.GetPublicWarBounty)
 		publicGroup.GET("public/teamList", competitionTeamApi.GetPublicTeamList)
+		publicGroup.GET("public/warTable", competitionTeamApi.GetWarTableDownload)
 		publicGroup.GET("ranking", competitionTeamApi.GetTeamScoreRanking)
+		publicGroup.GET("bountyRanking", competitionTeamApi.GetTeamBountyRanking)
 	}
 }

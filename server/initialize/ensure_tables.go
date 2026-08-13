@@ -73,6 +73,7 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		example.CompetitionTeam{},
 		example.TeamScore{},
 		example.PlayerSelection{},
+		example.WarTableFile{},
 
 		model.Info{},
 	}
@@ -120,6 +121,7 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		example.CompetitionTeam{},
 		example.TeamScore{},
 		example.PlayerSelection{},
+		example.WarTableFile{},
 
 		model.Info{},
 	}

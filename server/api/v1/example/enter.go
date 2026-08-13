@@ -25,4 +25,5 @@ var (
 	competitionTeamService       = service.ServiceGroupApp.ExampleServiceGroup.CompetitionTeamService
 	excelImportService           = service.ServiceGroupApp.ExampleServiceGroup.ExcelImportService
 	playerSelectionService       = service.ServiceGroupApp.ExampleServiceGroup.PlayerSelectionService
+	warTableExcelService         = service.ServiceGroupApp.ExampleServiceGroup.WarTableExcelService
 )

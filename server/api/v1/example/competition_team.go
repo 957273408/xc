@@ -2,6 +2,7 @@ package example
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
@@ -270,6 +271,19 @@ func (a *CompetitionTeamApi) GetTeamScoreRanking(c *gin.Context) {
 	response.OkWithDetailed(result, "获取成功", c)
 }
 
+// GetTeamBountyRanking 战队赏金排名
+func (a *CompetitionTeamApi) GetTeamBountyRanking(c *gin.Context) {
+	groupName := c.Query("groupName")
+	result, err := competitionTeamService.GetTeamBountyRanking(groupName)
+	if err != nil {
+		global.GVA_LOG.Error("获取赏金排名失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+
+	response.OkWithDetailed(result, "获取成功", c)
+}
+
 func (a *CompetitionTeamApi) DeleteTeamScore(c *gin.Context) {
 	teamIDStr := c.Query("teamId")
 	warID := c.Query("warId")
@@ -313,6 +327,7 @@ func (a *CompetitionTeamApi) UpdateTeamScore(c *gin.Context) {
 }
 
 // GetPublicWarScores 公开接口：获取指定WarId下各战队当场积分（无需鉴权）
+// 支持 teams 参数指定额外队伍code（逗号分隔或重复参数），这些队伍会追加到列表末尾
 func (a *CompetitionTeamApi) GetPublicWarScores(c *gin.Context) {
 	warID := c.Query("warId")
 	if warID == "" {
@@ -320,7 +335,28 @@ func (a *CompetitionTeamApi) GetPublicWarScores(c *gin.Context) {
 		return
 	}
 
-	result, err := competitionTeamService.GetPublicWarScores(warID)
+	// 解析额外队伍code（兼容逗号分隔与重复参数，去重）
+	var extraCodes []string
+	seen := make(map[string]struct{})
+	addCode := func(code string) {
+		code = strings.TrimSpace(code)
+		if code == "" {
+			return
+		}
+		if _, ok := seen[code]; ok {
+			return
+		}
+		seen[code] = struct{}{}
+		extraCodes = append(extraCodes, code)
+	}
+	for _, part := range strings.Split(c.Query("teams"), ",") {
+		addCode(part)
+	}
+	for _, code := range c.QueryArray("teams") {
+		addCode(code)
+	}
+
+	result, err := competitionTeamService.GetPublicWarScores(warID, extraCodes)
 	if err != nil {
 		global.GVA_LOG.Error("获取WarId积分失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)

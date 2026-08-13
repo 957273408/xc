@@ -317,11 +317,11 @@ func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp
 	}
 	var allRecords []ScoreRecord
 	subQuery := global.GVA_DB.Model(&example.TeamScore{}).
-		Select("team_id, total_score, ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY settle_time DESC) AS rn").
-		Where("team_id IN (?)", teamIDs)
+	Select("team_id, total_score, ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY created_at DESC) AS rn").
+	Where("team_id IN (?)", teamIDs)
 	err := global.GVA_DB.Table("(?) AS ranked", subQuery).
 		Where("rn <= ?", 4).
-		Order("team_id").
+		Order("team_id ASC, rn ASC").
 		Find(&allRecords).Error
 	if err != nil {
 		return nil, err
@@ -349,13 +349,38 @@ func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp
 		teamBountyMap[b.TeamID] = b.TotalBounty
 	}
 
-	// 6. 组装排名结果
+	// 6. 批量查询各战队总淘汰数
+	type KillSum struct {
+		TeamID    uint `gorm:"column:team_id"`
+		TotalKills int  `gorm:"column:total_kills"`
+	}
+	var killSums []KillSum
+	global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, SUM(kill_count) AS total_kills").
+		Where("team_id IN (?)", teamIDs).
+		Group("team_id").
+		Find(&killSums)
+	teamKillsMap := make(map[uint]int)
+	for _, k := range killSums {
+		teamKillsMap[k.TeamID] = k.TotalKills
+	}
+
+	// 6.5 同分按总淘汰数排序
+	sort.SliceStable(teams, func(i, j int) bool {
+		if teams[i].TotalScore != teams[j].TotalScore {
+			return teams[i].TotalScore > teams[j].TotalScore
+		}
+		return teamKillsMap[teams[i].ID] > teamKillsMap[teams[j].ID]
+	})
+
+	// 7. 组装排名结果
 	items := make([]exaResp.TeamRankingItem, 0, len(teams))
 	for i, t := range teams {
 		history := teamHistoryMap[t.ID]
 		if history == nil {
 			history = []int{}
 		}
+		hasPlayed := len(history) > 0
 		item := exaResp.TeamRankingItem{
 			Rank:        i + 1,
 			TeamID:      t.ID,
@@ -363,25 +388,151 @@ func (s *CompetitionTeamService) GetTeamScoreRanking(groupName string) (*exaResp
 			TeamCode:    t.TeamCode,
 			TeamLogo:    t.TeamLogo,
 			GroupName:   t.GroupName,
-			TotalScore:  t.TotalScore,
-			TotalBounty: teamBountyMap[t.ID],
+			TotalScore:  exaResp.FlexInt{Valid: hasPlayed, Value: t.TotalScore},
+			TotalKills:  exaResp.FlexInt{Valid: hasPlayed, Value: teamKillsMap[t.ID]},
+			TotalBounty: exaResp.FlexInt64{Valid: hasPlayed, Value: teamBountyMap[t.ID]},
+			MatchCount:  exaResp.FlexInt{Valid: hasPlayed, Value: len(history)},
 		}
-		if len(history) > 0 {
-			item.ScoreHistory1 = history[0]
+		// 反转 history 使其从最旧到最新排列，然后从 scoreHistory4 开始填充
+		rev := make([]int, len(history))
+		for j := 0; j < len(history); j++ {
+			rev[j] = history[len(history)-1-j]
 		}
-		if len(history) > 1 {
-			item.ScoreHistory2 = history[1]
+		if len(rev) > 0 {
+			item.ScoreHistory4 = exaResp.FlexInt{Valid: true, Value: rev[0]} // 第1场（最早）
 		}
-		if len(history) > 2 {
-			item.ScoreHistory3 = history[2]
+		if len(rev) > 1 {
+			item.ScoreHistory3 = exaResp.FlexInt{Valid: true, Value: rev[1]} // 第2场
 		}
-		if len(history) > 3 {
-			item.ScoreHistory4 = history[3]
+		if len(rev) > 2 {
+			item.ScoreHistory2 = exaResp.FlexInt{Valid: true, Value: rev[2]} // 第3场
+		}
+		if len(rev) > 3 {
+			item.ScoreHistory1 = exaResp.FlexInt{Valid: true, Value: rev[3]} // 第4场（最晚）
 		}
 		items = append(items, item)
 	}
 
 	return &exaResp.TeamScoreRankingResponse{Items: items}, nil
+}
+
+// GetTeamBountyRanking 按队伍总赏金排名，同赏金按总积分降序
+func (s *CompetitionTeamService) GetTeamBountyRanking(groupName string) (*exaResp.TeamBountyRankingResponse, error) {
+	// 1. 查询所有战队
+	var teams []example.CompetitionTeam
+	query := global.GVA_DB
+	if groupName != "" {
+		query = query.Where("group_name = ?", groupName)
+	}
+	if err := query.Find(&teams).Error; err != nil {
+		return nil, err
+	}
+
+	teamIDs := make([]uint, len(teams))
+	for i, t := range teams {
+		teamIDs[i] = t.ID
+	}
+
+	// 2. 批量查询各战队总赏金（team_score.bounty_coin）
+	type BountySum struct {
+		TeamID      uint  `gorm:"column:team_id"`
+		TotalBounty int64 `gorm:"column:total_bounty"`
+	}
+	var bountySums []BountySum
+	global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, SUM(bounty_coin) AS total_bounty").
+		Where("team_id IN (?)", teamIDs).
+		Group("team_id").
+		Find(&bountySums)
+	teamBountyMap := make(map[uint]int64)
+	for _, b := range bountySums {
+		teamBountyMap[b.TeamID] = b.TotalBounty
+	}
+
+	// 3. 批量查询各战队总淘汰数
+	type KillSum struct {
+		TeamID    uint `gorm:"column:team_id"`
+		TotalKills int  `gorm:"column:total_kills"`
+	}
+	var killSums []KillSum
+	global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, SUM(kill_count) AS total_kills").
+		Where("team_id IN (?)", teamIDs).
+		Group("team_id").
+		Find(&killSums)
+	teamKillsMap := make(map[uint]int)
+	for _, k := range killSums {
+		teamKillsMap[k.TeamID] = k.TotalKills
+	}
+
+	// 4. 批量获取各战队最近4场积分
+	type ScoreRecord struct {
+		TeamID     uint `gorm:"column:team_id"`
+		TotalScore int  `gorm:"column:total_score"`
+	}
+	var allRecords []ScoreRecord
+	subQuery := global.GVA_DB.Model(&example.TeamScore{}).
+		Select("team_id, total_score, ROW_NUMBER() OVER (PARTITION BY team_id ORDER BY created_at DESC) AS rn").
+		Where("team_id IN (?)", teamIDs)
+	global.GVA_DB.Table("(?) AS ranked", subQuery).
+		Where("rn <= ?", 4).
+		Order("team_id ASC, rn ASC").
+		Find(&allRecords)
+	teamHistoryMap := make(map[uint][]int)
+	for _, r := range allRecords {
+		teamHistoryMap[r.TeamID] = append(teamHistoryMap[r.TeamID], r.TotalScore)
+	}
+
+	// 5. 按总赏金降序排序，同赏金按总积分降序
+	sort.SliceStable(teams, func(i, j int) bool {
+		bi, bj := teamBountyMap[teams[i].ID], teamBountyMap[teams[j].ID]
+		if bi != bj {
+			return bi > bj
+		}
+		return teams[i].TotalScore > teams[j].TotalScore
+	})
+
+	// 6. 组装结果
+	items := make([]exaResp.TeamBountyRankingItem, 0, len(teams))
+	for i, t := range teams {
+		history := teamHistoryMap[t.ID]
+		if history == nil {
+			history = []int{}
+		}
+		hasPlayed := len(history) > 0
+		item := exaResp.TeamBountyRankingItem{
+			Rank:        i + 1,
+			TeamID:      t.ID,
+			TeamName:    t.TeamCode,
+			TeamCode:    t.TeamCode,
+			TeamLogo:    t.TeamLogo,
+			GroupName:   t.GroupName,
+			TotalBounty: exaResp.FlexInt64{Valid: hasPlayed, Value: teamBountyMap[t.ID]},
+			TotalScore:  exaResp.FlexInt{Valid: hasPlayed, Value: t.TotalScore},
+			TotalKills:  exaResp.FlexInt{Valid: hasPlayed, Value: teamKillsMap[t.ID]},
+			MatchCount:  exaResp.FlexInt{Valid: hasPlayed, Value: len(history)},
+		}
+		// 反转 history 从最旧到最新，填充 scoreHistory4→1
+		rev := make([]int, len(history))
+		for j := 0; j < len(history); j++ {
+			rev[j] = history[len(history)-1-j]
+		}
+		if len(rev) > 0 {
+			item.ScoreHistory4 = exaResp.FlexInt{Valid: true, Value: rev[0]}
+		}
+		if len(rev) > 1 {
+			item.ScoreHistory3 = exaResp.FlexInt{Valid: true, Value: rev[1]}
+		}
+		if len(rev) > 2 {
+			item.ScoreHistory2 = exaResp.FlexInt{Valid: true, Value: rev[2]}
+		}
+		if len(rev) > 3 {
+			item.ScoreHistory1 = exaResp.FlexInt{Valid: true, Value: rev[3]}
+		}
+		items = append(items, item)
+	}
+
+	return &exaResp.TeamBountyRankingResponse{Items: items}, nil
 }
 
 func (s *CompetitionTeamService) DeleteTeamScore(teamID uint, warID string) error {
@@ -411,12 +562,7 @@ func (s *CompetitionTeamService) UpdateTeamScore(id, teamID uint, rank, killCoun
 	score.KillScore = killScore
 	score.TotalScore = totalScore
 	score.BountyCoin = bountyCoin
-
-	if settleTime != "" {
-		if t, err := time.Parse("2006-01-02 15:04:05", settleTime); err == nil {
-			score.SettleTime = t
-		}
-	}
+	// 修改时不更新 settle_time，保持为创建时间
 
 	if err := global.GVA_DB.Save(&score).Error; err != nil {
 		return err
@@ -499,7 +645,8 @@ func (s *CompetitionTeamService) CalculateWarIDForAllTeams(warID string) (*exaRe
 }
 
 // GetPublicWarScores 公开接口：获取指定WarId下所有战队的当场积分（按积分降序）
-func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.PublicWarScoreResponse, error) {
+// extraTeamCodes 指定的队伍code会追加到列表末尾（即使本场未参赛）
+func (s *CompetitionTeamService) GetPublicWarScores(warID string, extraTeamCodes []string) (*exaResp.PublicWarScoreResponse, error) {
 	// 复用批量计算逻辑
 	calcResp, err := s.CalculateWarIDForAllTeams(warID)
 	if err != nil {
@@ -553,7 +700,7 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 	})
 
 	// 构建响应
-	rankOneImg := "https://asset.fangguo.com/front-end/upload/3071503/2026-08/img/fd1627da-cb14-4d39.png"
+	rankOneImg := "https://asset.fangguo.com/front-end/upload/3071503/2026-08/img/43d79914-9722-4920.png"
 	resp := &exaResp.PublicWarScoreResponse{
 		WarID: warID,
 		Items: make([]exaResp.PublicWarScoreItem, 0, len(all)),
@@ -561,7 +708,7 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 	for i, m := range all {
 		rank := i + 1
 		rankOne := ""
-		if rank == 1 {
+		if m.RankScore == 16 {
 			rankOne = rankOneImg
 		}
 		resp.Items = append(resp.Items, exaResp.PublicWarScoreItem{
@@ -569,13 +716,49 @@ func (s *CompetitionTeamService) GetPublicWarScores(warID string) (*exaResp.Publ
 			TeamName:    m.TeamCode,
 			TeamLogo:    logoMap[m.TeamName],
 			GroupName:   groupNameMap[m.TeamName],
-			TotalScore:  m.TotalScore,
-			RankScore:   m.RankScore,
-			KillCount:   m.KillCount,
-			BountyCoin:  m.BountyCoin,
+			TotalScore:  exaResp.FlexInt{Valid: true, Value: m.TotalScore},
+			RankScore:   exaResp.FlexInt{Valid: true, Value: m.RankScore},
+			KillCount:   exaResp.FlexInt{Valid: true, Value: m.KillCount},
+			BountyCoin:  exaResp.FlexInt64{Valid: true, Value: m.BountyCoin},
 			IsTopKiller: m.KillCount == maxKills && maxKills > 0,
 			RankOne:     rankOne,
 		})
+	}
+
+	// 追加指定队伍到末尾（未在本场出现的队伍）
+	if len(extraTeamCodes) > 0 {
+		// 已出现在列表中的队伍code
+		exists := make(map[string]struct{}, len(resp.Items))
+		for _, item := range resp.Items {
+			exists[item.TeamName] = struct{}{}
+		}
+		teamByCode := make(map[string]example.CompetitionTeam, len(teams))
+		for _, t := range teams {
+			teamByCode[t.TeamCode] = t
+		}
+		rank := len(resp.Items) + 1
+		for _, code := range extraTeamCodes {
+			if _, ok := exists[code]; ok {
+				continue
+			}
+			t, ok := teamByCode[code]
+			if !ok {
+				continue // 系统中不存在的队伍code跳过
+			}
+			exists[code] = struct{}{}
+			resp.Items = append(resp.Items, exaResp.PublicWarScoreItem{
+				Rank:        rank,
+				TeamName:    t.TeamCode,
+				TeamLogo:    t.TeamLogo,
+				GroupName:   t.GroupName,
+				TotalScore:  exaResp.FlexInt{Valid: false},
+				RankScore:   exaResp.FlexInt{Valid: false},
+				KillCount:   exaResp.FlexInt{Valid: false},
+				BountyCoin:  exaResp.FlexInt64{Valid: false},
+				IsTopKiller: false,
+			})
+			rank++
+		}
 	}
 
 	return resp, nil
@@ -596,14 +779,17 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 
 	teamCodes := make([]string, 0, len(teams))
 	teamLogoMap := make(map[string]string)
+	teamGroupMap := make(map[string]string)
 	for _, t := range teams {
 		teamCodes = append(teamCodes, t.TeamCode)
 		teamLogoMap[t.TeamCode] = t.TeamLogo
+		teamGroupMap[t.TeamCode] = t.GroupName
 	}
 
 	type teamDetail struct {
 		teamCode    string
 		teamLogo    string
+		groupName   string
 		totalBounty int64
 		players     []int64 // 按赏金降序
 	}
@@ -622,8 +808,9 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 		}
 		if _, exists := teamMap[code]; !exists {
 			teamMap[code] = &teamDetail{
-				teamCode: code,
-				teamLogo: teamLogoMap[code],
+				teamCode:  code,
+				teamLogo:  teamLogoMap[code],
+				groupName: teamGroupMap[code],
 			}
 		}
 		td := teamMap[code]
@@ -653,28 +840,20 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 		})
 		results = append(results, resultItem{code: code, teamDetail: *td})
 	}
-	// 未匹配战队也加入
-	for _, t := range teams {
-		if _, exists := teamMap[t.TeamCode]; !exists {
-			results = append(results, resultItem{
-				code: t.TeamCode,
-				teamDetail: teamDetail{
-					teamCode: t.TeamCode,
-					teamLogo: t.TeamLogo,
-				},
-			})
-		}
-	}
 
-	// 按总赏金降序
+	// 按组别排序，同组按总赏金降序
 	sort.Slice(results, func(i, j int) bool {
+		if results[i].groupName != results[j].groupName {
+			return results[i].groupName < results[j].groupName
+		}
 		return results[i].totalBounty > results[j].totalBounty
 	})
 
-	var maxBounty int64
+	// 计算各组内最大赏金
+	groupMaxBounty := make(map[string]int64)
 	for _, r := range results {
-		if r.totalBounty > maxBounty {
-			maxBounty = r.totalBounty
+		if r.totalBounty > groupMaxBounty[r.groupName] {
+			groupMaxBounty[r.groupName] = r.totalBounty
 		}
 	}
 
@@ -682,13 +861,18 @@ func (s *CompetitionTeamService) GetPublicWarBounty(warID string) (*exaResp.Publ
 		WarID: warID,
 		Items: make([]exaResp.TeamBountyItem, 0, len(results)),
 	}
-	for i, r := range results {
+	// 组内排名
+	groupRanks := make(map[string]int)
+	for _, r := range results {
+		groupRanks[r.groupName]++
+		rank := groupRanks[r.groupName]
 		item := exaResp.TeamBountyItem{
-			Rank:        i + 1,
+			Rank:        rank,
 			TeamName:    r.teamCode,
 			TeamLogo:    r.teamLogo,
+			GroupName:   r.groupName,
 			TotalBounty: r.totalBounty,
-			IsTopBounty: r.totalBounty == maxBounty && maxBounty > 0,
+			IsTopBounty: r.totalBounty == groupMaxBounty[r.groupName] && r.totalBounty > 0,
 		}
 		// 填充最多4个选手
 		for p := 0; p < len(r.players) && p < 4; p++ {

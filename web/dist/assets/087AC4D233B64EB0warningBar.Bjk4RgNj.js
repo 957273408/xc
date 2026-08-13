@@ -1,4 +1,4 @@
 /*! 
  Build based on gin-vue-admin 
- Time : 1785941130000 */
+ Time : 1786178192000 */
 import{$ as e,At as t,Bt as n,F as r,O as i,Y as a,cn as o,lt as s,mt as c,rn as l,w as u,x as d}from"./087AC4D233B64EB0vue.runtime.esm-bundler.BKnUQD2q.js";import{gt as f}from"./087AC4D233B64EB0dist.fT2qSmKH.js";c(),r(),n();var p={__name:`warningBar`,props:{title:{type:String,default:``},href:{type:String,default:``}},setup(n){let r=n,c=()=>{r.href&&window.open(r.href)};return(r,p)=>{let m=e(`el-icon`);return a(),u(`div`,{class:l([`px-1.5 py-2 flex items-center rounded-sm mt-2 bg-amber-50 gap-2 mb-3 text-amber-500 dark:bg-amber-700 dark:text-gray-200`,n.href&&`cursor-pointer`]),onClick:c},[i(m,{class:`text-xl`},{default:s(()=>[i(t(f))]),_:1}),d(`span`,null,o(n.title),1)],2)}}};export{p as t};

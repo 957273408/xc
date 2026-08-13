@@ -78,6 +78,7 @@ func RegisterTables() {
 		example.CompetitionTeam{},
 		example.TeamScore{},
 		example.PlayerSelection{},
+		example.WarTableFile{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("register table failed", zap.Error(err))

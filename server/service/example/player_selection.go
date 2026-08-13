@@ -438,7 +438,7 @@ func (s *PlayerSelectionService) GetLatestSelection() (*exaResp.LatestSelectionR
 			NickName:   p.NickName,
 			Data1Name:  "淘汰数",
 			Data1Value: fmt.Sprintf("%d", p.KillCount),
-			Data2Name:  "爆头率",
+			Data2Name:  "暴击率",
 			Data2Value: fmt.Sprintf("%.1f%%", p.HeadshotRate),
 			Data3Name:  "命中率",
 			Data3Value: fmt.Sprintf("%.1f%%", p.AccuracyRate),
@@ -738,7 +738,21 @@ func top5(players []exaResp.PlayerInfo, score func(exaResp.PlayerInfo) float64) 
 	copied := make([]exaResp.PlayerInfo, len(players))
 	copy(copied, players)
 	sort.Slice(copied, func(i, j int) bool {
-		return score(copied[i]) > score(copied[j])
+		si, sj := score(copied[i]), score(copied[j])
+		if si != sj {
+			return si > sj
+		}
+		// 同分时：伤害量 > 淘汰数 > 爆头率 > 命中率
+		if copied[i].DamageAmount != copied[j].DamageAmount {
+			return copied[i].DamageAmount > copied[j].DamageAmount
+		}
+		if copied[i].KillCount != copied[j].KillCount {
+			return copied[i].KillCount > copied[j].KillCount
+		}
+		if copied[i].HeadshotRate != copied[j].HeadshotRate {
+			return copied[i].HeadshotRate > copied[j].HeadshotRate
+		}
+		return copied[i].AccuracyRate > copied[j].AccuracyRate
 	})
 	n := 5
 	if len(copied) < n {

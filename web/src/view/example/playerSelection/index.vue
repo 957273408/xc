@@ -195,7 +195,7 @@
                 <span class="stat-kill">{{ row.killCount }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="爆头率" width="110" align="center">
+            <el-table-column label="暴击率" width="110" align="center">
               <template #default="{ row }">
                 <span class="stat-rate">{{ formatPercent(row.headshotRate) }}</span>
               </template>
@@ -425,7 +425,7 @@ const displayCards = computed(() => {
     nickName: p.nickName,
     stats: [
       { name: '淘汰数', value: String(p.killCount ?? 0) },
-      { name: '爆头率', value: formatPercent(p.headshotRate) },
+      { name: '暴击率', value: formatPercent(p.headshotRate) },
       { name: '命中率', value: formatPercent(p.accuracyRate) },
       { name: extraLabel(selectedExtraStat1.value), value: String(extraValue(p, selectedExtraStat1.value)) },
       { name: extraLabel(selectedExtraStat2.value), value: String(extraValue(p, selectedExtraStat2.value)) }

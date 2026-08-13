@@ -11,4 +11,5 @@ type ServiceGroup struct {
 	CompetitionTeamService
 	ExcelImportService
 	PlayerSelectionService
+	WarTableExcelService
 }

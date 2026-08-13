@@ -1,4 +1,4 @@
 /*! 
  Build based on gin-vue-admin 
- Time : 1785941130000 */
+ Time : 1786178192000 */
 import{Bt as e,C as t,F as n,Q as r,Y as i,cn as a,fn as o,rn as s,w as c,x as l}from"./087AC4D233B64EB0vue.runtime.esm-bundler.BKnUQD2q.js";var u=o({default:()=>m});e(),n();var d={key:0,class:`flex justify-between items-center`},f={class:`text-sm font-semibold tracking-tight text-black dark:text-white`},p={key:0,class:`text-xs text-black/60 dark:text-white/60 hover:text-active cursor-pointer`},m={__name:`card`,props:{title:{type:String,default:``},showAction:{type:Boolean,default:!1},customClass:{type:String,default:``},withoutPadding:{type:Boolean,default:!1}},setup(e){return(n,o)=>(i(),c(`div`,{class:s([`rounded-lg border border-black/10 bg-white text-black/80 dark:text-slate-400 dark:bg-slate-900 dark:text-white/80`,[e.customClass||``,e.withoutPadding?`p-0`:`p-4`]])},[e.title?(i(),c(`div`,d,[l(`div`,f,a(e.title),1),e.showAction?(i(),c(`div`,p,` 更多 `)):t(``,!0)])):t(``,!0),l(`div`,{class:s(e.title?`mt-3`:``)},[r(n.$slots,`default`)],2)],2))}};export{u as n,m as t};

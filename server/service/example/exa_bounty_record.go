@@ -38,10 +38,10 @@ func (b *BountyRecordService) GetPoolInfo() (example.ExaPublicBountyPool, error)
 }
 
 // GetTeamBountyRanking 获取队伍赏金排行榜
-func (b *BountyRecordService) GetTeamBountyRanking(page, pageSize int) (exaRes.TeamBountyRankingResponse, error) {
+func (b *BountyRecordService) GetTeamBountyRanking(page, pageSize int) (exaRes.ExaTeamBountyRankingResponse, error) {
 	var teams []example.ExaTeam
 	var total int64
-	var result exaRes.TeamBountyRankingResponse
+	var result exaRes.ExaTeamBountyRankingResponse
 
 	db := global.GVA_DB.Model(&example.ExaTeam{})
 	err := db.Count(&total).Error
@@ -59,9 +59,9 @@ func (b *BountyRecordService) GetTeamBountyRanking(page, pageSize int) (exaRes.T
 	}
 
 	// 构建排行榜项
-	rankItems := make([]exaRes.TeamBountyRankingItem, len(teams))
+	rankItems := make([]exaRes.ExaTeamBountyRankingItem, len(teams))
 	for i, team := range teams {
-		rankItems[i] = exaRes.TeamBountyRankingItem{
+		rankItems[i] = exaRes.ExaTeamBountyRankingItem{
 			ID:          team.ID,
 			TeamName:    team.TeamName,
 			TotalBounty: team.TotalBounty,

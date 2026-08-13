@@ -1,0 +1,4 @@
+/*! 
+ Build based on gin-vue-admin 
+ Time : 1786178192000 */
+import{F as e,H as t,K as n,U as r}from"./087AC4D233B64EB0vue.runtime.esm-bundler.BKnUQD2q.js";import{F as i,c as a}from"./087AC4D233B64EB0index.UVBnxUbV.js";function o(e,t,n,r=!1){e.addEventListener&&typeof e.addEventListener==`function`&&e.addEventListener(t,n,r)}function s(e,t,n,r=!1){e.removeEventListener&&typeof e.removeEventListener==`function`&&e.removeEventListener(t,n,r)}e();var c=992;function l(){return document.body.getBoundingClientRect().width-1<c}function u(e){let c=a();function u(){if(!document.hidden){let e=l();c.toggleDevice(e?`mobile`:`desktop`)}}let d=i(u,100);n(()=>{e&&d()}),t(()=>{o(window,`resize`,d)}),r(()=>{s(window,`resize`,d)})}export{u as t};

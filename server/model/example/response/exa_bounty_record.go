@@ -7,19 +7,19 @@ type BountyRecordListResponse struct {
 	Total int64                     `json:"total"`
 }
 
-// TeamBountyRankingItem 队伍赏金排行榜项
-type TeamBountyRankingItem struct {
+// ExaTeamBountyRankingItem 队伍赏金排行榜项（基于 ExaTeam 表）
+type ExaTeamBountyRankingItem struct {
 	ID          uint    `json:"id"`
 	TeamName    string  `json:"teamName"`
 	TotalBounty float64 `json:"totalBounty"`
 	Rank        int     `json:"rank"`
 }
 
-// TeamBountyRankingResponse 队伍赏金排行榜响应
-type TeamBountyRankingResponse struct {
-	List  []TeamBountyRankingItem `json:"list"`
-	Total int64                   `json:"total"`
-	Page  int                     `json:"page"`
+// ExaTeamBountyRankingResponse 队伍赏金排行榜响应（基于 ExaTeam 表）
+type ExaTeamBountyRankingResponse struct {
+	List  []ExaTeamBountyRankingItem `json:"list"`
+	Total int64                      `json:"total"`
+	Page  int                        `json:"page"`
 }
 
 // PlayerBountyRankingItem 选手赏金排行榜项
